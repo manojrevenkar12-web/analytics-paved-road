@@ -184,12 +184,8 @@ def _constant(e: exp.Expression) -> Any:
         raise ValueError("not constant")
     if isinstance(e, exp.Literal):
         return e.this if e.is_string else float(e.this) if "." in e.this else int(e.this)
-    if (
-        isinstance(e, exp.Cast)
-        and isinstance(e.this, exp.Literal)
-        and e.this.is_string
-        and e.to.this in (exp.DataType.Type.DATE, exp.DataType.Type.TIMESTAMP)
-    ):
+    if isinstance(e, exp.Cast) and isinstance(e.this, exp.Literal) and e.this.is_string and e.to.this in _TEMPORAL:
+        # timestamps in Spark SQL are session-local (UTC here); no engine is needed for a literal
         v = e.this.this
         return dt.date.fromisoformat(v) if e.to.this == exp.DataType.Type.DATE else dt.datetime.fromisoformat(v)
     sql = exp.select(e.copy()).sql("duckdb")
@@ -198,6 +194,14 @@ def _constant(e: exp.Expression) -> Any:
     return row[0] if row else None
 
 
+_TEMPORAL = {
+    exp.DataType.Type.DATE,
+    exp.DataType.Type.TIMESTAMP,
+    exp.DataType.Type.TIMESTAMPTZ,
+    exp.DataType.Type.TIMESTAMPNTZ,
+    exp.DataType.Type.TIMESTAMPLTZ,
+    exp.DataType.Type.DATETIME,
+}
 _CONST_LOCK = threading.Lock()
 _CONST: list[duckdb.DuckDBPyConnection] = []
 

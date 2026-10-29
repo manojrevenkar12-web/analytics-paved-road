@@ -8,6 +8,7 @@ data:
   kyuubi-defaults.conf: |
     kyuubi.frontend.protocols=THRIFT_BINARY
     kyuubi.frontend.thrift.binary.bind.port=10009
+    kyuubi.frontend.bind.host=0.0.0.0
     kyuubi.authentication=NONE
     kyuubi.engine.share.level=SERVER
     kyuubi.session.engine.initialize.timeout=PT5M
