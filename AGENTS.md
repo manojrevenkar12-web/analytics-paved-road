@@ -8,7 +8,7 @@
 - `ruff check src tests airflow && ruff format --check src tests airflow && mypy`
 - `apr lint` (contracts), `apr generate && git diff --exit-code` (generated files are current).
 - `cd console && npm test`, `cd integrations/n8n-nodes-paved-road && npm test`.
-- Airflow: `.venv-airflow/bin/pytest airflow/tests` (separate environment).
+- Airflow: `pytest airflow/tests` in an environment with Airflow 3.1 (CI job `airflow`; kept apart from the main environment).
 - `apr build` builds the full 120-day lake (about 3 minutes); `apr simulate` (about 10 minutes) and
   `apr drill` regenerate `reports/`.
 

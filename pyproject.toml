@@ -29,7 +29,7 @@ spark = ["pyhive[hive_pure_sasl]>=0.7", "thrift>=0.20"]
 ai = ["anthropic>=0.60"]
 # transformations
 dbt = ["dbt-duckdb>=1.9"]
-dev = ["pytest>=8.3", "pytest-asyncio>=1.0", "ruff>=0.12", "mypy>=1.16", "types-PyYAML", "playwright==1.56.0"]
+dev = ["pytest>=8.3", "pytest-asyncio>=1.0", "ruff==0.17.3", "mypy>=1.16", "types-PyYAML", "playwright==1.56.0"]
 
 [project.scripts]
 apr = "apr.cli:main"

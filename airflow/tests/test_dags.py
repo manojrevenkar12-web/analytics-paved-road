@@ -30,11 +30,8 @@ def test_marts_are_scheduled_on_their_upstream_assets():
         if c["build"]["kind"] != "dbt":
             continue
         dag = b.get_dag(f"build__{c['name']}")
-        names = (
-            {a.name for a in dag.timetable.asset_condition.iter_assets().values()}
-            if hasattr(dag.timetable.asset_condition, "iter_assets")
-            else set()
-        )
+        found = list(dag.timetable.asset_condition.iter_assets())
+        names = {(x[1] if isinstance(x, tuple) else x).name for x in found}
         ups = {next(x["table"] for x in CONTRACTS if x["name"] == u) for u in c["upstream"]}
         assert names == ups, (c["name"], names)
         assert [t.task_id for t in dag.tasks] == ["dbt_build", "publish"]
