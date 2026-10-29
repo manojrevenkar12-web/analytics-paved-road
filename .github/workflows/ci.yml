@@ -130,7 +130,7 @@ jobs:
         run: |
           kubectl -n analytics port-forward svc/iceberg-rest 8181:8181 >/tmp/pf1.log 2>&1 &
           kubectl -n analytics port-forward svc/s3 9000:9000 >/tmp/pf2.log 2>&1 &
-          kubectl -n analytics port-forward svc/kyuubi 10009:10009 >/tmp/pf3.log 2>&1 &
+          (while true; do kubectl -n analytics port-forward svc/kyuubi 10009:10009 >>/tmp/pf3.log 2>&1; sleep 1; done) &
           kubectl -n analytics port-forward svc/apr-gateway 8000:8000 >/tmp/pf4.log 2>&1 &
           sleep 5
       - name: ingest three days into S3 through the REST catalog
@@ -168,7 +168,18 @@ jobs:
           APR_KYUUBI_HOST: 127.0.0.1
         run: |
           set -o pipefail
-          pytest -q -m spark tests/test_spark_parity.py 2>&1 | tee parity.log || { echo "::error title=parity::$(tail -60 parity.log | sed ':a;N;$!ba;s/\n/%0A/g')"; kubectl -n analytics logs deploy/kyuubi --tail=60; exit 1; }
+          # the first session starts the Spark engine inside Kyuubi; wait for it
+          python - <<'PY' 2>&1 | tail -n 5
+          import time
+          from pyhive import hive
+          for i in range(40):
+              try:
+                  c = hive.connect(host="127.0.0.1", port=10009, username="warmup").cursor()
+                  c.execute("SELECT 1"); print("engine ready", c.fetchall()); break
+              except Exception as e:
+                  print("waiting", type(e).__name__, str(e)[:120]); time.sleep(10)
+          PY
+          pytest -q -m spark --tb=short tests/test_spark_parity.py 2>&1 | tee parity.log || { echo "::error title=parity::$(grep -E '^E |Error|assert|FAILED' parity.log | head -n 25 | cut -c1-300 | sed ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g')"; echo "::error title=kyuubi::$(kubectl -n analytics logs deploy/kyuubi --tail=300 | grep -E 'ERROR|Exception|Caused' | grep -v '^\s*at ' | tail -n 12 | cut -c1-300 | sed ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g')"; exit 1; }
 
   release:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
