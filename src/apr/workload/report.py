@@ -18,7 +18,7 @@ def slo_series(outs: list[Outcome], days: int, step: int = 60) -> dict[str, tupl
     """Per-minute good and total counts for each objective, as Prometheus would count them."""
     n = int(days * DAY // step)
     series: dict[str, tuple[np.ndarray, np.ndarray]] = {
-        k: (np.zeros(n), np.zeros(n)) for k in ("gateway_availability", "fast_lane_latency", "spark_lane_latency")
+        k: (np.zeros(n), np.zeros(n)) for k in conf.read("slo")["objectives"]
     }
     for o in outs:
         i = min(int(o.t // step), n - 1)
@@ -26,7 +26,16 @@ def slo_series(outs: list[Outcome], days: int, step: int = 60) -> dict[str, tupl
             g, t = series["gateway_availability"]
             t[i] += 1
             g[i] += o.status == "ok"
-        if o.status == "ok" and o.lane == "fast" and not o.degraded:
+        if (
+            o.lane == "spark"
+            and not o.degraded
+            and not o.cached
+            and o.status in ("ok", "queue_full", "lane_unavailable", "engine_error")
+        ):
+            g, t = series["spark_lane_availability"]
+            t[i] += 1
+            g[i] += o.status == "ok"
+        if o.status == "ok" and o.lane == "fast" and not o.degraded and not o.cached:
             g, t = series["fast_lane_latency"]
             t[i] += 1
             g[i] += o.latency <= 2.0

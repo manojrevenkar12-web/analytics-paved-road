@@ -55,7 +55,7 @@
     }
   }
   html, body { background: var(--color-canvas); color: var(--color-ink); }
-  body { font-family: var(--font-sans); font-feature-settings: "tnum" 1; -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
   :focus-visible { outline: 2px solid var(--color-marking); outline-offset: 2px; border-radius: 3px; }
 }
 
@@ -72,7 +72,7 @@
   .btn-primary { background: var(--color-ink); color: var(--color-panel); border-color: var(--color-ink); }
   .btn-primary:hover { background: var(--color-ink-soft); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.data { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
   table.data th { text-align: left; font-weight: 600; color: var(--color-ink-soft); border-bottom: 1px solid var(--color-line); padding: 6px 10px; position: sticky; top: 0; background: var(--color-panel); }
   table.data td { border-bottom: 1px solid var(--color-sunk); padding: 5px 10px; white-space: nowrap; }
   table.data td.num { text-align: right; }

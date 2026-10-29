@@ -59,3 +59,9 @@ def test_budget_policy_freezes_deploys_when_spent():
     assert not ok and "FROZEN" in text
     status["objectives"][0].update(ratio=0.999, budget_remaining=0.8)
     assert check(status)[0]
+
+
+def test_the_simulator_counts_every_objective():
+    from apr.workload.report import slo_series
+
+    assert set(slo_series([], 1)) == set(conf.read("slo")["objectives"])

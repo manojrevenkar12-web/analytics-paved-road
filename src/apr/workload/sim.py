@@ -314,6 +314,7 @@ class Workload:
         faults = faults or Faults()
         g = conf.read("platform")["gateway"]
         cap = dict(g["concurrency"])
+        nominal = {"fast": int(cap["fast"]), "spark": int(cap["spark"])}
         per_user = int(cap.pop("per_user")) if faults.admission else 10**9
         if not faults.admission:
             cap = {"fast": 10**9, "spark": 10**9}
@@ -348,6 +349,9 @@ class Workload:
             busy[lane] += 1
             inflight[req["user"]] += 1
             svc = self.service_time(lane, req["k"].est_bytes, rng) * cap_spark_slow[lane]
+            if not faults.admission:
+                # no admission control: everyone shares the engine's capacity (processor sharing)
+                svc *= max(1.0, busy[lane] / nominal[lane])
             heapq.heappush(events, (t + svc, next(seq), "done", req, False))
 
         def pump(lane: str, t: float) -> None:

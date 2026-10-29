@@ -32,8 +32,6 @@ jobs:
         run: |
           set -o pipefail
           pytest -q 2>&1 | tee pytest.log || { echo "::error title=pytest::$(tail -40 pytest.log | sed ':a;N;$!ba;s/\n/%0A/g')"; exit 1; }
-      - name: error budget policy
-        run: apr budget
 
   console:
     runs-on: ubuntu-latest
@@ -161,3 +159,23 @@ jobs:
         run: |
           set -o pipefail
           pytest -q -m spark tests/test_spark_parity.py 2>&1 | tee parity.log || { echo "::error title=parity::$(tail -60 parity.log | sed ':a;N;$!ba;s/\n/%0A/g')"; kubectl -n analytics logs deploy/kyuubi --tail=60; exit 1; }
+
+  release:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: [python, console, n8n-node, promtool, airflow, terraform, kind]
+    runs-on: ubuntu-latest
+    permissions: {contents: read, packages: write}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12", cache: pip}
+      - run: pip install -e .
+      - name: error budget policy (no rollout while a budget is spent)
+        run: set -o pipefail; apr budget | tee budget.txt; echo "::notice title=error budgets::$(sed ':a;N;$!ba;s/\n/%0A/g' budget.txt)"
+      - uses: docker/login-action@v3
+        with: {registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}"}
+      - name: build and push the image
+        run: |
+          img=ghcr.io/${{ github.repository_owner }}/analytics-paved-road
+          docker build -f docker/Dockerfile -t $img:${{ github.sha }} -t $img:latest .
+          docker push $img:${{ github.sha }} && docker push $img:latest

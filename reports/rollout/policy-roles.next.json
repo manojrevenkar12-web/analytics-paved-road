@@ -1,0 +1,43 @@
+{
+  "summary": {
+    "replayed": 18,
+    "changed": 2,
+    "newly_allowed": 2,
+    "needs_dpo_review": true,
+    "breaks_users": false
+  },
+  "changes": [
+    {
+      "kind": "newly_allowed",
+      "user": "pia",
+      "sql": "SELECT birth_date, country FROM raw.customers LIMIT 5",
+      "now": {
+        "status": "refused",
+        "rule": "denied_column"
+      },
+      "candidate": {
+        "status": "ok",
+        "masked": [
+          "raw.customers.birth_date"
+        ],
+        "lane": "fast"
+      }
+    },
+    {
+      "kind": "newly_allowed",
+      "user": "pia",
+      "sql": "SELECT YEAR(birth_date) AS y, COUNT(*) FROM raw.customers GROUP BY 1",
+      "now": {
+        "status": "refused",
+        "rule": "denied_column"
+      },
+      "candidate": {
+        "status": "ok",
+        "masked": [
+          "raw.customers.birth_date"
+        ],
+        "lane": "fast"
+      }
+    }
+  ]
+}

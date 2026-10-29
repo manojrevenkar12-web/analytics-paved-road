@@ -1,0 +1,261 @@
+{
+  "generated_by": "apr drill",
+  "drills": [
+    {
+      "name": "spark_down",
+      "kind": "simulated",
+      "question": "If the Spark lane fails in working hours, who notices, how fast, and what still works?",
+      "injected": "Kyuubi unreachable 10:00-10:40 UTC on 2026-09-23.",
+      "timeline": [
+        [
+          "10:00",
+          "Kyuubi stops accepting sessions (the Spark lane is down)."
+        ],
+        [
+          "10:00",
+          "The gateway marks the lane down and runs queries up to 1 GiB on DuckDB instead; larger ones get 503 with a retry hint."
+        ],
+        [
+          "10:07",
+          "ticket_slow (ticket) fires."
+        ],
+        [
+          "10:32",
+          "ticket_fast (ticket) fires."
+        ],
+        [
+          "10:40",
+          "Kyuubi is back; the lane is used again after its health check."
+        ],
+        [
+          "11:13",
+          "ticket_fast resolves."
+        ],
+        [
+          "16:20",
+          "ticket_slow resolves."
+        ]
+      ],
+      "results": {
+        "during_outage_people": {
+          "queries": 426,
+          "answered": 307,
+          "failed": 44,
+          "p50_s": 0.035,
+          "p95_s": 0.321
+        },
+        "degraded_to_fast_lane": 14,
+        "failed_with_degrade": 44,
+        "failed_without_degrade": 60,
+        "failed_baseline": 463,
+        "alerts": [
+          {
+            "alert": "ticket_fast",
+            "severity": "ticket",
+            "start": "10:32",
+            "end": "11:13"
+          },
+          {
+            "alert": "ticket_slow",
+            "severity": "ticket",
+            "start": "10:07",
+            "end": "16:20"
+          }
+        ],
+        "alerts_without_degrade": [
+          {
+            "alert": "page_fast",
+            "severity": "page",
+            "start": "10:29",
+            "end": "10:39"
+          },
+          {
+            "alert": "page_slow",
+            "severity": "page",
+            "start": "10:37",
+            "end": "10:42"
+          },
+          {
+            "alert": "ticket_fast",
+            "severity": "ticket",
+            "start": "10:22",
+            "end": "12:24"
+          },
+          {
+            "alert": "ticket_slow",
+            "severity": "ticket",
+            "start": "10:05",
+            "end": "16:24"
+          }
+        ]
+      },
+      "verdict": "fail"
+    },
+    {
+      "name": "catalog_latency",
+      "kind": "simulated",
+      "question": "Does a slow catalog make every query slow, and does the latency SLO see it?",
+      "injected": "+2.5 s per catalog load 14:00-15:00 UTC.",
+      "timeline": [
+        [
+          "14:00",
+          "Iceberg REST catalog responses slow down by 2.5 s per table load."
+        ],
+        [
+          "15:00",
+          "Catalog latency back to normal."
+        ]
+      ],
+      "results": {
+        "fast_within_2s_with_metadata_cache": 0.853448275862069,
+        "fast_within_2s_without_cache": 0.0,
+        "p95_fast_with_cache_s": 2.555,
+        "p95_fast_without_cache_s": 2.555,
+        "alerts_with_cache": [],
+        "alerts_without_cache": [
+          {
+            "alert": "page_fast",
+            "severity": "page",
+            "start": "14:40",
+            "end": "15:00"
+          },
+          {
+            "alert": "ticket_slow",
+            "severity": "ticket",
+            "start": "14:31",
+            "end": "20:44"
+          }
+        ]
+      },
+      "verdict": "pass"
+    },
+    {
+      "name": "query_storm",
+      "kind": "simulated",
+      "question": "Can one runaway automation make the platform slow for everyone else?",
+      "injected": "40 queries/s from one service user 11:00-11:10 UTC.",
+      "timeline": [
+        [
+          "11:00",
+          "An n8n workflow loops: 40 distinct queries a second."
+        ],
+        [
+          "11:00",
+          "Admission control holds it to its 2 concurrent queries; the rest wait up to 5 s and are refused with 429."
+        ],
+        [
+          "11:10",
+          "The workflow is stopped."
+        ]
+      ],
+      "results": {
+        "storm_queries": 24000,
+        "storm_refused_429": 16154,
+        "others_with_admission": {
+          "queries": 165,
+          "answered": 137,
+          "failed": 0,
+          "p50_s": 0.035,
+          "p95_s": 3.419
+        },
+        "others_without_admission": {
+          "queries": 165,
+          "answered": 137,
+          "failed": 0,
+          "p50_s": 0.035,
+          "p95_s": 2.6
+        }
+      },
+      "verdict": "fail"
+    },
+    {
+      "name": "late_upstream",
+      "kind": "real",
+      "question": "When an upstream batch is late, who is told, and what do consumers see meanwhile?",
+      "injected": "raw.trades for 2026-06-04 lands 180 minutes after its usual 04:30.",
+      "timeline": [
+        [
+          "04:30",
+          "The other raw tables land on time."
+        ],
+        [
+          "06:10",
+          "APR_ProductLate (ticket) for trades to #brokerage-data: no data for 2026-06-04 after 06:00."
+        ],
+        [
+          "07:10",
+          "APR_ProductLate (page) for daily_trading to #brokerage-analytics: no data for 2026-06-04 after 07:00."
+        ],
+        [
+          "07:30",
+          "raw.trades for 2026-06-04 lands, 180 minutes late."
+        ],
+        [
+          "07:30",
+          "trades published for 2026-06-04; the alert resolves."
+        ],
+        [
+          "07:42",
+          "The daily_trading DAG's sensor releases; dbt builds the mart."
+        ],
+        [
+          "07:42",
+          "daily_trading published for 2026-06-04; the alert resolves."
+        ]
+      ],
+      "results": {
+        "mart_published": [
+          "published",
+          "published"
+        ],
+        "mart_data_through": "2026-06-04",
+        "mart_late_minutes": 42,
+        "landed": {
+          "raw.customers": "2026-06-05T04:30:00",
+          "raw.instruments": "2026-06-05T04:30:00",
+          "raw.savings_plans": "2026-06-05T04:30:00",
+          "raw.prices_daily": "2026-06-05T04:30:00",
+          "raw.trades": "2026-06-05T07:30:00",
+          "raw.cash_movements": "2026-06-05T04:30:00"
+        }
+      },
+      "verdict": "pass"
+    },
+    {
+      "name": "bad_batch",
+      "kind": "real",
+      "question": "If a source sends a corrupt batch, does anyone read it before it is caught?",
+      "injected": "raw.trades for 2026-06-04 with 50 negative amounts and 20 duplicated trade ids.",
+      "timeline": [
+        [
+          "04:30",
+          "The batch is written to the audit branch audit-2026-06-04."
+        ],
+        [
+          "04:31",
+          "Contract checks fail: unique on trade_id: 20 duplicates; positive on amount_eur: 50 rows <= 0."
+        ],
+        [
+          "04:31",
+          "main is not moved; the run is quarantined and the owner (#brokerage-data) is told. Readers keep the previous day's data."
+        ],
+        [
+          "05:20",
+          "The source re-sends a clean batch; it passes the checks and is published."
+        ]
+      ],
+      "results": {
+        "first_run": "quarantined",
+        "failed_checks": [
+          "unique on trade_id: 20 duplicates",
+          "positive on amount_eur: 50 rows <= 0"
+        ],
+        "main_unchanged": true,
+        "rows_visible_while_quarantined": 0,
+        "second_run": "published",
+        "rows_visible_after_fix": 3219
+      },
+      "verdict": "pass"
+    }
+  ]
+}

@@ -84,8 +84,9 @@ def spark_down(wl: Workload, cfg: dict[str, Any]) -> dict[str, Any]:
     without = wl.run_gateway(arr, Faults(spark_down=[(s0, s1)], degrade=False))
     base = wl.run_baseline(arr, Faults(spark_down=[(s0, s1)]))
     win = (s0, s1)
-    alerts = _alerts(with_degrade, "gateway_availability")
-    alerts_nodeg = _alerts(without, "gateway_availability")
+    alerts = _alerts(with_degrade, "spark_lane_availability")
+    alerts_nodeg = _alerts(without, "spark_lane_availability")
+    overall = _alerts(with_degrade, "gateway_availability")
     degraded = sum(1 for o in with_degrade if o.degraded)
     st = _stats(_humans(with_degrade, *win))
     timeline = [
@@ -98,11 +99,11 @@ def spark_down(wl: Workload, cfg: dict[str, Any]) -> dict[str, Any]:
         ),
     ]
     for a in alerts:
-        timeline.append((a["start"], f"{a['alert']} ({a['severity']}) fires."))
+        timeline.append((a["start"], f"Spark lane availability: {a['alert']} ({a['severity']}) fires."))
     timeline.append((d["end"], "Kyuubi is back; the lane is used again after its health check."))
     for a in alerts:
         if a["end"]:
-            timeline.append((a["end"], f"{a['alert']} resolves."))
+            timeline.append((a["end"], f"Spark lane availability: {a['alert']} resolves."))
     return {
         "name": "spark_down",
         "kind": "simulated",
@@ -117,6 +118,7 @@ def spark_down(wl: Workload, cfg: dict[str, Any]) -> dict[str, Any]:
             "failed_baseline": sum(1 for o in base if o.status == "lane_unavailable"),
             "alerts": alerts,
             "alerts_without_degrade": alerts_nodeg,
+            "overall_availability_alerts": overall,
         },
         "verdict": _verdict(alerts, "page"),
     }
@@ -163,6 +165,8 @@ def query_storm(wl: Workload, cfg: dict[str, Any]) -> dict[str, Any]:
     faults = Faults(storm=[(s0, s1, d["template"], d["per_second"])])
     arr = wl.arrivals(1, start_day=di, faults=faults)
     arr = [(a[0], a[1], a[2], a[3], (i if a[1] == "aut999" else a[4]), a[5]) for i, a in enumerate(arr)]
+    calm_arr = wl.arrivals(1, start_day=di)
+    calm = wl.run_gateway(calm_arr)
     guarded = wl.run_gateway(arr, faults)
     unguarded = wl.run_gateway(arr, Faults(storm=faults.storm, admission=False))
     others = lambda outs: [o for o in outs if o.user != "aut999" and s0 <= o.t < s1 + 300 and o.human]  # noqa: E731
@@ -184,10 +188,12 @@ def query_storm(wl: Workload, cfg: dict[str, Any]) -> dict[str, Any]:
         "results": {
             "storm_queries": len(storm),
             "storm_refused_429": sum(1 for o in storm if o.status in ("user_concurrency", "queue_full")),
+            "others_without_storm": _stats(others(calm)),
             "others_with_admission": _stats(others(guarded)),
             "others_without_admission": _stats(others(unguarded)),
         },
-        "verdict": "pass" if _stats(others(guarded))["p95_s"] < 2.0 else "fail",
+        # others must not notice the storm: p95 within 10% (+50 ms) of the same window without it
+        "verdict": "pass" if _stats(others(guarded))["p95_s"] <= 1.1 * _stats(others(calm))["p95_s"] + 0.05 else "fail",
     }
 
 

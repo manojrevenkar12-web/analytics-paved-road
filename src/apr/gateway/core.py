@@ -126,8 +126,9 @@ class Gateway:
             res.message = f"{type(e).__name__}: {str(e).splitlines()[0][:300]}"
         res.duration_s = time.perf_counter() - t0
         outcome = res.status if res.status != "error" else res.rule
-        metrics.REQUESTS.labels(res.lane or "none", res.role or "unknown", outcome).inc()
-        if res.lane and res.status == "ok":
+        label = "cache" if res.cached else (res.lane or "none")
+        metrics.REQUESTS.labels(label, res.role or "unknown", outcome).inc()
+        if res.lane and res.status == "ok" and not res.cached:
             metrics.LATENCY.labels(res.lane).observe(res.duration_s)
         if self.audit_log:
             audit.append(

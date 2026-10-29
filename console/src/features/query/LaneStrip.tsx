@@ -43,7 +43,7 @@ export function LaneStrip({ estBytes, lane, refused, limitBytes }: Props) {
           initial={false}
           animate={{
             left: refused ? "1%" : `calc(${Math.min(x, 92)}% )`,
-            top: refused ? "50%" : row === 0 ? "22%" : "62%",
+            top: refused ? "50%" : row === 0 ? "calc(25% - 14px)" : "calc(75% - 14px)",
             y: refused ? "-50%" : 0,
           }}
           transition={motionTokens.marker}

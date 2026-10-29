@@ -52,6 +52,58 @@ groups:
     annotations:
       summary: 'Queries the platform accepted that did not fail on the platform''s side: error budget burning 1x'
       runbook: docs/runbooks/gateway_availability.md
+- name: slo-spark_lane_availability
+  rules:
+  - record: slo:apr_spark_lane_availability:error_ratio5m
+    expr: 1 - (sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[5m]))) / (sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[5m])))
+  - record: slo:apr_spark_lane_availability:error_ratio30m
+    expr: 1 - (sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[30m]))) / (sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[30m])))
+  - record: slo:apr_spark_lane_availability:error_ratio1h
+    expr: 1 - (sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[1h]))) / (sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[1h])))
+  - record: slo:apr_spark_lane_availability:error_ratio2h
+    expr: 1 - (sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[2h]))) / (sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[2h])))
+  - record: slo:apr_spark_lane_availability:error_ratio6h
+    expr: 1 - (sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[6h]))) / (sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[6h])))
+  - record: slo:apr_spark_lane_availability:error_ratio1d
+    expr: 1 - (sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[1d]))) / (sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[1d])))
+  - record: slo:apr_spark_lane_availability:error_ratio3d
+    expr: 1 - (sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[3d]))) / (sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[3d])))
+  - record: slo:apr_spark_lane_availability:error_ratio30d
+    expr: 1 - (sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[30d]))) / (sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[30d])))
+  - record: slo:apr_spark_lane_availability:budget_remaining
+    expr: 1 - slo:apr_spark_lane_availability:error_ratio30d / 0.01
+  - alert: APR_SparkLaneAvailability_PageFast
+    expr: slo:apr_spark_lane_availability:error_ratio1h > 0.144 and slo:apr_spark_lane_availability:error_ratio5m > 0.144
+    labels:
+      severity: page
+      slo: spark_lane_availability
+    annotations:
+      summary: 'Queries sent to the Spark lane that it answered: error budget burning 14.4x'
+      runbook: docs/runbooks/spark_lane_availability.md
+  - alert: APR_SparkLaneAvailability_PageSlow
+    expr: slo:apr_spark_lane_availability:error_ratio6h > 0.06 and slo:apr_spark_lane_availability:error_ratio30m > 0.06
+    labels:
+      severity: page
+      slo: spark_lane_availability
+    annotations:
+      summary: 'Queries sent to the Spark lane that it answered: error budget burning 6x'
+      runbook: docs/runbooks/spark_lane_availability.md
+  - alert: APR_SparkLaneAvailability_TicketFast
+    expr: slo:apr_spark_lane_availability:error_ratio1d > 0.03 and slo:apr_spark_lane_availability:error_ratio2h > 0.03
+    labels:
+      severity: ticket
+      slo: spark_lane_availability
+    annotations:
+      summary: 'Queries sent to the Spark lane that it answered: error budget burning 3x'
+      runbook: docs/runbooks/spark_lane_availability.md
+  - alert: APR_SparkLaneAvailability_TicketSlow
+    expr: slo:apr_spark_lane_availability:error_ratio3d > 0.01 and slo:apr_spark_lane_availability:error_ratio6h > 0.01
+    labels:
+      severity: ticket
+      slo: spark_lane_availability
+    annotations:
+      summary: 'Queries sent to the Spark lane that it answered: error budget burning 1x'
+      runbook: docs/runbooks/spark_lane_availability.md
 - name: slo-fast_lane_latency
   rules:
   - record: slo:apr_fast_lane_latency:error_ratio5m

@@ -9,6 +9,13 @@ objectives:
     # refused queries (policy, limits, bad SQL) are the user's outcome, not a failure; 429 counts
     good: 'sum(rate(apr_gateway_requests_total{outcome="ok"}[{{window}}]))'
     total: 'sum(rate(apr_gateway_requests_total{outcome=~"ok|engine_error|lane_unavailable|queue_full"}[{{window}}]))'
+  spark_lane_availability:
+    # a component objective: cache hits and degraded runs do not count, so an outage of the lane
+    # is not diluted by everything else the gateway still answers (found by the spark_down drill)
+    description: Queries sent to the Spark lane that it answered
+    objective: 0.99
+    good: 'sum(rate(apr_gateway_requests_total{lane="spark",outcome="ok"}[{{window}}]))'
+    total: 'sum(rate(apr_gateway_requests_total{lane="spark",outcome=~"ok|engine_error|lane_unavailable|queue_full"}[{{window}}]))'
   fast_lane_latency:
     description: Fast-lane queries answered within 2 seconds
     objective: 0.95
