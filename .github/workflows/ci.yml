@@ -145,8 +145,8 @@ jobs:
         run: |
           set -o pipefail
           python -c "from apr.lake.ingest import ingest; runs = ingest(3); assert all(r.status == 'published' for r in runs), runs" 2>&1 | tee ingest.log || {
-            echo "::error title=ingest::$(grep -v '^\s*$' ingest.log | tail -c 3000 | sed ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g')"
-            kubectl -n analytics logs deploy/iceberg-rest --tail=40 | tail -c 2500 > rest.log
+            echo "::error title=ingest::$(grep -v '^\s*$' ingest.log | tail -n 8 | cut -c1-400 | sed ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g')"
+            kubectl -n analytics logs deploy/iceberg-rest --tail=400 | grep -E "Exception|Caused by|ERROR|WARN" | grep -v "^\s*at " | tail -n 12 | cut -c1-400 > rest.log
             echo "::error title=rest catalog::$(sed ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g' rest.log)"
             exit 1; }
       - name: the gateway in the cluster answers from the lake
