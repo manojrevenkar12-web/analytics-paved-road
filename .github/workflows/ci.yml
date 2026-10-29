@@ -118,10 +118,15 @@ jobs:
       - name: diagnostics on failure
         if: failure()
         run: |
-          kubectl -n analytics get pods -o wide
-          for p in $(kubectl -n analytics get pods -o name); do echo "::group::$p"; kubectl -n analytics logs $p --all-containers --tail=80 || true; echo "::endgroup::"; done
-          msg=$(kubectl -n analytics get pods 2>&1; kubectl -n analytics logs deploy/kyuubi --tail=30 2>&1)
-          echo "::error title=kind::$(echo "$msg" | sed ':a;N;$!ba;s/\n/%0A/g')"
+          set +e
+          {
+            kubectl -n analytics get pods -o wide
+            kubectl -n analytics get events --sort-by=.lastTimestamp | tail -25
+            for p in $(kubectl -n analytics get pods -o name); do echo "== $p"; kubectl -n analytics logs $p --all-containers --tail=15; done
+          } > diag.txt 2>&1
+          cat diag.txt
+          echo "::error title=kind diagnostics::$(tail -c 3500 diag.txt | sed ':a;N;$!ba;s/%/%25/g;s/\r//g;s/\n/%0A/g')"
+          exit 0
       - name: port-forward
         run: |
           kubectl -n analytics port-forward svc/iceberg-rest 8181:8181 >/tmp/pf1.log 2>&1 &
