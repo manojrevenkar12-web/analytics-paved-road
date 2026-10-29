@@ -1,0 +1,83 @@
+@import "tailwindcss";
+@import "@fontsource-variable/schibsted-grotesk/index.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+/* Road and signage: mineral paper, asphalt for the lanes, road-marking yellow as the one accent.
+   Access states carry their own colours: clear (green), masked (indigo), denied (brick). */
+@theme {
+  --font-sans: "Schibsted Grotesk Variable", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-canvas: #edf0ec;
+  --color-panel: #ffffff;
+  --color-sunk: #f4f6f3;
+  --color-line: #cdd3cf;
+  --color-ink: #14212b;
+  --color-ink-soft: #46545f;
+  --color-muted: #6b7781;
+  --color-asphalt: #2b3239;
+  --color-asphalt-edge: #434c55;
+  --color-marking: #e8b223;
+  --color-clear: #1c7a55;
+  --color-masked: #4f5fb8;
+  --color-denied: #b03a2e;
+  --color-warn: #a86a00;
+
+  --radius-panel: 8px;
+  --radius-control: 5px;
+  --shadow-panel: 0 1px 0 rgb(20 33 43 / 0.05), 0 10px 28px -20px rgb(20 33 43 / 0.35);
+
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+}
+
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --color-canvas: #0f1519;
+      --color-panel: #161e24;
+      --color-sunk: #12191e;
+      --color-line: #2a353d;
+      --color-ink: #dfe6e9;
+      --color-ink-soft: #a9b6bd;
+      --color-muted: #7d8b93;
+      --color-asphalt: #0b0f12;
+      --color-asphalt-edge: #2a333a;
+      --color-marking: #f0c24a;
+      --color-clear: #4cb98c;
+      --color-masked: #8f9cf0;
+      --color-denied: #e57366;
+      --color-warn: #e0a640;
+    }
+  }
+  html, body { background: var(--color-canvas); color: var(--color-ink); }
+  body { font-family: var(--font-sans); font-feature-settings: "tnum" 1; -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 2px solid var(--color-marking); outline-offset: 2px; border-radius: 3px; }
+}
+
+@layer components {
+  .panel { background: var(--color-panel); border: 1px solid var(--color-line); border-radius: var(--radius-panel); box-shadow: var(--shadow-panel); }
+  .skeleton {
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--color-sunk) 0%, var(--color-line) 50%, var(--color-sunk) 100%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+  .btn { border-radius: var(--radius-control); border: 1px solid var(--color-line); padding: 0.35rem 0.75rem; font-weight: 550; }
+  .btn:hover { border-color: var(--color-ink-soft); }
+  .btn-primary { background: var(--color-ink); color: var(--color-panel); border-color: var(--color-ink); }
+  .btn-primary:hover { background: var(--color-ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  table.data { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.data th { text-align: left; font-weight: 600; color: var(--color-ink-soft); border-bottom: 1px solid var(--color-line); padding: 6px 10px; position: sticky; top: 0; background: var(--color-panel); }
+  table.data td { border-bottom: 1px solid var(--color-sunk); padding: 5px 10px; white-space: nowrap; }
+  table.data td.num { text-align: right; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}

@@ -1,0 +1,117 @@
+# The workload simulation: about 300 people and automations using the analytical plane for 30
+# days, through the gateway and, as the baseline, straight against the Spark cluster.
+# Planning and access decisions are the real planner's on the real lake; byte counts are scaled
+# to production volume and execution times are modelled. Every modelled number is here.
+seed: 7
+days: 30
+# production bytes = lake bytes x scale: tables that grow with customers scale with ~10M customers
+# against 20k simulated; daily_trading grows with days, countries and asset classes only
+scale: {default: 500, mart.daily_trading: 1, raw.instruments: 1, raw.prices_daily: 1}
+users:
+  analyst: 120
+  product_manager: 110
+  compliance: 10
+  automation: 60                # n8n workflows, each its own service user
+queries_per_person_per_day:     # Poisson, during working hours (Mon-Fri 08:00-19:00 UTC)
+  analyst: 26
+  product_manager: 14
+  compliance: 18
+retry_after_refusal: 0.85       # share of people who fix a refused query following the message
+automation_fix_after_h: 4       # an n8n workflow refused by the gateway is fixed by its owner this much later
+latency:                        # modelled execution, lognormal around these
+  plan_s: 0.03
+  fast: {overhead_s: 0.08, bytes_per_s: 400000000}      # DuckDB in a 2-vCPU gateway pod reading S3
+  spark: {overhead_s: 2.5, bytes_per_s: 2500000000}     # Kyuubi shared engine (warm), 16 executors
+  sigma: 0.35
+  catalog_load_s: 0.02          # one Iceberg REST metadata load
+transient_error_rate: 0.0003   # queries failing on the engine side (S3 throttling, executor loss), both worlds
+include_drill_faults: true      # the 30-day run includes the spark_down and catalog_latency faults of config/drills.yaml
+capacity:                       # baseline: the same Spark cluster, no gateway pods
+  baseline_spark_concurrency: 4
+cost:
+  usd_per_tb_scanned: 5.0       # proxy for compute per byte scanned; the comparison matters, not the price
+  gateway_pods_usd_per_month: 420   # 3 gateway pods (2 vCPU, 8 GiB) on EKS, on-demand eu-central-1
+# Query templates. {d7} etc. are dates relative to the last complete day; {isin}, {customer},
+# {country} are drawn from the simulated brokerage. `fixed` is what a person sends after reading
+# the refusal message. `who` gives the weight of the template per role; `variety` is how many
+# different parameterisations people use ({dW} is a window of 7 to 30 days chosen by the parameter).
+templates:
+  dashboard_trading:
+    who: {analyst: 1, product_manager: 3}
+    variety: 1
+    sql: >-
+      SELECT trade_date, asset_class, SUM(trades) AS trades, SUM(buy_volume_eur + sell_volume_eur) AS volume
+      FROM mart.daily_trading WHERE trade_date >= DATE '{d30}' GROUP BY 1, 2 ORDER BY 1, 2
+  dashboard_inflows:
+    who: {analyst: 1, product_manager: 2}
+    variety: 1
+    sql: >-
+      SELECT month, country, SUM(net_inflow_eur) AS net_inflow, COUNT(DISTINCT customer_id) AS customers
+      FROM mart.customer_month WHERE month >= DATE '{m3}' GROUP BY 1, 2
+  segment_week:
+    who: {analyst: 4, product_manager: 2}
+    variety: 24
+    sql: >-
+      SELECT c.segment, COUNT(*) AS trades, SUM(t.amount_eur) AS volume, COUNT(DISTINCT t.customer_id) AS traders
+      FROM raw.trades t JOIN raw.customers c ON c.customer_id = t.customer_id
+      WHERE t.executed_at >= DATE '{dW}' GROUP BY 1
+  instrument_history:
+    who: {analyst: 3, product_manager: 2}
+    variety: 200
+    sql: SELECT * FROM raw.trades WHERE isin = '{isin}'
+    fixed: SELECT * FROM raw.trades WHERE isin = '{isin}' AND executed_at >= DATE '{dW}'
+  top_instruments_quarter:
+    who: {analyst: 2}
+    variety: 3
+    sql: >-
+      SELECT t.isin, i.name, i.asset_class, COUNT(*) AS trades, SUM(t.amount_eur) AS volume
+      FROM raw.trades t JOIN raw.instruments i ON i.isin = t.isin
+      WHERE t.executed_at >= DATE '{d90}' GROUP BY 1, 2, 3 ORDER BY volume DESC LIMIT 50
+  customer_list:
+    who: {analyst: 1, product_manager: 2}
+    variety: 18
+    sql: SELECT full_name, email, country, segment FROM raw.customers WHERE country = '{country}' LIMIT 200
+    fixed: SELECT country, segment, COUNT(*) AS customers FROM raw.customers WHERE country = '{country}' GROUP BY 1, 2
+  cohort_export:
+    who: {analyst: 1}
+    variety: 18
+    sql: SELECT * FROM mart.customer_month
+    fixed: SELECT * FROM mart.customer_month WHERE month = DATE '{m1}' AND country = '{country}'
+  investigation:
+    who: {compliance: 6}
+    variety: 200
+    sql: >-
+      SELECT c.customer_id, c.full_name, c.iban, m.booked_at, m.type, m.amount_eur
+      FROM raw.cash_movements m JOIN raw.customers c ON c.customer_id = m.customer_id
+      WHERE m.booked_at >= DATE '{d90}' AND m.customer_id = '{customer}'
+  large_movements:
+    who: {compliance: 3}
+    variety: 1
+    sql: >-
+      SELECT customer_id, booked_at, type, amount_eur FROM raw.cash_movements
+      WHERE booked_at >= DATE '{d30}' AND ABS(amount_eur) > 5000 ORDER BY amount_eur DESC LIMIT 500
+  backfill_scan:
+    who: {analyst: 1}
+    variety: 1
+    sql: >-
+      SELECT CAST(executed_at AS DATE) AS day, channel, venue, COUNT(*) AS trades, SUM(amount_eur) AS volume
+      FROM raw.trades WHERE executed_at >= DATE '{d120}' GROUP BY 1, 2, 3
+  automation_ops:
+    who: {automation: 1}
+    variety: 1
+    every_min: 15
+    sql: >-
+      SELECT channel, COUNT(*) AS trades FROM raw.trades WHERE executed_at >= DATE '{d1}' GROUP BY 1
+  automation_report:
+    who: {automation: 1}
+    variety: 1
+    every_min: 60
+    sql: >-
+      SELECT trade_date, SUM(buy_volume_eur) AS buys FROM mart.daily_trading WHERE trade_date >= DATE '{d7}' GROUP BY 1
+    fixed: SELECT trade_date, SUM(trades) AS trades FROM mart.daily_trading WHERE trade_date >= DATE '{d7}' GROUP BY 1
+  storm_lookup:
+    who: {}
+    variety: 4800
+    sql: >-
+      SELECT channel, venue, COUNT(*) AS trades FROM raw.trades
+      WHERE executed_at >= DATE '{dW}' AND isin = '{isin}' GROUP BY 1, 2

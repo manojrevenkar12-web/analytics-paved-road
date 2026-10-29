@@ -1,0 +1,34 @@
+# Service level objectives of the analytical plane, with error budgets over 30 days.
+# Alerts follow the multi-window, multi-burn-rate method (Google SRE Workbook, ch. 5):
+# page when the budget burns fast in both a long and a short window, ticket when it burns slowly.
+window_days: 30
+objectives:
+  gateway_availability:
+    description: Queries the platform accepted that did not fail on the platform's side
+    objective: 0.995
+    # refused queries (policy, limits, bad SQL) are the user's outcome, not a failure; 429 counts
+    good: 'sum(rate(apr_gateway_requests_total{outcome="ok"}[{{window}}]))'
+    total: 'sum(rate(apr_gateway_requests_total{outcome=~"ok|engine_error|lane_unavailable|queue_full"}[{{window}}]))'
+  fast_lane_latency:
+    description: Fast-lane queries answered within 2 seconds
+    objective: 0.95
+    good: 'sum(rate(apr_gateway_query_duration_seconds_bucket{lane="fast",le="2"}[{{window}}]))'
+    total: 'sum(rate(apr_gateway_query_duration_seconds_count{lane="fast"}[{{window}}]))'
+  spark_lane_latency:
+    description: Spark-lane queries answered within 2 minutes
+    objective: 0.9
+    good: 'sum(rate(apr_gateway_query_duration_seconds_bucket{lane="spark",le="120"}[{{window}}]))'
+    total: 'sum(rate(apr_gateway_query_duration_seconds_count{lane="spark"}[{{window}}]))'
+# Data product freshness: the share of days a product's batch was published by the time in its
+# contract (freshness.expected_by, objective per product). Evaluated per product.
+freshness:
+  metric: apr_product_freshness_on_time
+burn_alerts:
+  - {name: page_fast, severity: page, long: 1h, short: 5m, burn: 14.4}
+  - {name: page_slow, severity: page, long: 6h, short: 30m, burn: 6}
+  - {name: ticket_fast, severity: ticket, long: 1d, short: 2h, burn: 3}
+  - {name: ticket_slow, severity: ticket, long: 3d, short: 6h, burn: 1}
+budget_policy:
+  # what happens when a budget runs low; `apr budget check` enforces the freeze in the deploy job
+  freeze_below: 0.0           # no feature rollouts while the 30-day budget is spent
+  review_below: 0.25          # reliability work is prioritised when less than a quarter is left

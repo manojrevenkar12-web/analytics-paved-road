@@ -1,0 +1,13 @@
+version: 2
+sources:
+  - name: raw
+    meta:
+      plugin: iceberg
+      iceberg_table: "raw.{identifier}"
+    tables:
+      - name: trades
+      - name: customers
+      - name: instruments
+      - name: cash_movements
+      - name: savings_plans
+      - name: prices_daily

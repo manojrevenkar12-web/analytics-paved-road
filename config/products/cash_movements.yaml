@@ -1,0 +1,19 @@
+name: cash_movements
+table: raw.cash_movements
+layer: raw
+domain: banking
+owner: {team: banking-data, contact: "#banking-data"}
+description: Deposits, withdrawals, interest and card spending on customer cash accounts.
+build: {kind: ingest}
+partitioning: [{source: booked_at, transform: day}]
+require_partition_filter: true
+freshness: {schedule: daily, expected_by: "06:00", objective: 0.99}
+columns:
+  - {name: movement_id, type: string, class: internal, nullable: false, unique: true}
+  - {name: customer_id, type: string, class: internal, nullable: false}
+  - {name: booked_at, type: timestamp, class: internal, nullable: false}
+  - {name: type, type: string, class: internal, nullable: false, accepted: [deposit, withdrawal, interest, card_spend, saveback]}
+  - {name: amount_eur, type: double, class: financial, nullable: false}
+quality:
+  - {check: row_count_min, value: 100}
+consumers: [customer_month]

@@ -1,0 +1,14 @@
+name: paved_road
+version: "1.0.0"
+config-version: 2
+profile: paved_road
+model-paths: ["models"]
+macro-paths: ["macros"]
+target-path: "../.lake/dbt/target"
+log-path: "../.lake/dbt/logs"
+models:
+  paved_road:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

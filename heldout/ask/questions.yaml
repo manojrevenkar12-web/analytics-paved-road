@@ -1,0 +1,404 @@
+data_through: 2026-09-28
+questions:
+  # ---------------------------------------------------------------- answerable
+  - id: q01
+    question: "What was our total trading volume last month?"
+    answerable: true
+    expect:
+      metrics: [trading_volume_eur]
+      dimensions: []
+      grain: null
+      start: 2026-08-01
+      end: 2026-08-31
+      filters: {}
+      order: natural
+      limit: null
+  - id: q02
+    question: "How many trades went through yesterday?"
+    answerable: true
+    expect:
+      metrics: [trades]
+      dimensions: []
+      grain: null
+      start: 2026-09-28
+      end: 2026-09-28
+      filters: {}
+      order: natural
+      limit: null
+  - id: q03
+    question: "Break down order fees by country for last week."
+    answerable: true
+    expect:
+      metrics: [fees_eur]
+      dimensions: [country]
+      grain: null
+      start: 2026-09-21
+      end: 2026-09-27
+      filters: {}
+      order: natural
+      limit: null
+  - id: q04
+    question: "How many people signed up in July, split by acquisition channel?"
+    answerable: true
+    expect:
+      metrics: [new_customers]
+      dimensions: [acquisition_channel]
+      grain: null
+      start: 2026-07-01
+      end: 2026-07-31
+      filters: {}
+      order: natural
+      limit: null
+  - id: q05
+    question: "Show me active traders per day for the last 14 days."
+    answerable: true
+    expect:
+      metrics: [active_traders]
+      dimensions: []
+      grain: day
+      start: 2026-09-15
+      end: 2026-09-28
+      filters: {}
+      order: natural
+      limit: null
+  - id: q06
+    question: "Buy volume this month: German customers versus French customers."
+    answerable: true
+    expect:
+      metrics: [buy_volume_eur]
+      dimensions: [country]
+      grain: null
+      start: 2026-09-01
+      end: 2026-09-28
+      filters: {country: [DE, FR]}
+      order: natural
+      limit: null
+  - id: q07
+    question: "Which five countries had the highest sell volume in August?"
+    answerable: true
+    expect:
+      metrics: [sell_volume_eur]
+      dimensions: [country]
+      grain: null
+      start: 2026-08-01
+      end: 2026-08-31
+      filters: {}
+      order: metric_desc
+      limit: 5
+  - id: q08
+    question: "What does net inflow look like per customer segment?"
+    answerable: true
+    expect:
+      metrics: [net_inflow_eur]
+      dimensions: [segment]
+      grain: null
+      start: 2026-08-01
+      end: 2026-08-31
+      filters: {}
+      order: natural
+      limit: null
+  - id: q09
+    question: "Deposits month by month from June through August, please."
+    answerable: true
+    expect:
+      metrics: [deposits_eur]
+      dimensions: []
+      grain: month
+      start: 2026-06-01
+      end: 2026-08-31
+      filters: {}
+      order: natural
+      limit: null
+  - id: q10
+    question: "What was the crypto trading volume in euros over the last 7 days?"
+    answerable: true
+    expect:
+      metrics: [trading_volume_eur]
+      dimensions: []
+      grain: null
+      start: 2026-09-22
+      end: 2026-09-28
+      filters: {asset_class: [crypto]}
+      order: natural
+      limit: null
+  - id: q11
+    question: "Average ticket size per asset class so far this quarter"
+    answerable: true
+    expect:
+      metrics: [average_ticket_eur]
+      dimensions: [asset_class]
+      grain: null
+      start: 2026-07-01
+      end: 2026-09-28
+      filters: {}
+      order: natural
+      limit: null
+  - id: q12
+    question: "Which trade channel generated the most order fees last month?"
+    answerable: true
+    expect:
+      metrics: [fees_eur]
+      dimensions: [channel]
+      grain: null
+      start: 2026-08-01
+      end: 2026-08-31
+      filters: {}
+      order: metric_desc
+      limit: 1
+  - id: q13
+    question: "Number of trades by country and asset class, last week"
+    answerable: true
+    expect:
+      metrics: [trades]
+      dimensions: [country, asset_class]
+      grain: null
+      start: 2026-09-21
+      end: 2026-09-27
+      filters: {}
+      order: natural
+      limit: null
+  - id: q14
+    question: "How many savings plan executions have we had this month?"
+    answerable: true
+    expect:
+      metrics: [savings_plan_executions]
+      dimensions: []
+      grain: null
+      start: 2026-09-01
+      end: 2026-09-28
+      filters: {}
+      order: natural
+      limit: null
+  - id: q15
+    question: "Weekly net buying since the beginning of August"
+    answerable: true
+    expect:
+      metrics: [net_buy_eur]
+      dimensions: []
+      grain: week
+      start: 2026-08-01
+      end: 2026-09-28
+      filters: {}
+      order: natural
+      limit: null
+  - id: q16
+    question: "Compare withdrawals for Italy and Spain in July."
+    answerable: true
+    expect:
+      metrics: [withdrawals_eur]
+      dimensions: [country]
+      grain: null
+      start: 2026-07-01
+      end: 2026-07-31
+      filters: {country: [IT, ES]}
+      order: natural
+      limit: null
+  - id: q17
+    question: "How many new customers came in through referrals in the last 30 days?"
+    answerable: true
+    expect:
+      metrics: [new_customers]
+      dimensions: []
+      grain: null
+      start: 2026-08-30
+      end: 2026-09-28
+      filters: {acquisition_channel: [referral]}
+      order: natural
+      limit: null
+  - id: q18
+    question: "Active traders by customer segment yesterday"
+    answerable: true
+    expect:
+      metrics: [active_traders]
+      dimensions: [segment]
+      grain: null
+      start: 2026-09-28
+      end: 2026-09-28
+      filters: {}
+      order: natural
+      limit: null
+  - id: q19
+    question: "Which country had the fewest active traders last week?"
+    answerable: true
+    expect:
+      metrics: [active_traders]
+      dimensions: [country]
+      grain: null
+      start: 2026-09-21
+      end: 2026-09-27
+      filters: {}
+      order: metric_asc
+      limit: 1
+  - id: q20
+    question: "Daily trading volume from 3 to 16 August"
+    answerable: true
+    expect:
+      metrics: [trading_volume_eur]
+      dimensions: []
+      grain: day
+      start: 2026-08-03
+      end: 2026-08-16
+      filters: {}
+      order: natural
+      limit: null
+  - id: q21
+    question: "Trades placed in the app, by month, since June"
+    answerable: true
+    expect:
+      metrics: [trades]
+      dimensions: []
+      grain: month
+      start: 2026-06-01
+      end: 2026-09-28
+      filters: {channel: [app]}
+      order: natural
+      limit: null
+  - id: q22
+    question: "ETF buy volume and sell volume for last month"
+    answerable: true
+    expect:
+      metrics: [buy_volume_eur, sell_volume_eur]
+      dimensions: []
+      grain: null
+      start: 2026-08-01
+      end: 2026-08-31
+      filters: {asset_class: [etf]}
+      order: natural
+      limit: null
+  - id: q23
+    question: "Net inflow side by side for Austria, Belgium and the Netherlands last month"
+    answerable: true
+    expect:
+      metrics: [net_inflow_eur]
+      dimensions: [country]
+      grain: null
+      start: 2026-08-01
+      end: 2026-08-31
+      filters: {country: [AT, BE, NL]}
+      order: natural
+      limit: null
+  - id: q24
+    question: "Top 3 asset classes by number of trades over the last 30 days"
+    answerable: true
+    expect:
+      metrics: [trades]
+      dimensions: [asset_class]
+      grain: null
+      start: 2026-08-30
+      end: 2026-09-28
+      filters: {}
+      order: metric_desc
+      limit: 3
+  - id: q25
+    question: "Deposits per country and customer segment in August"
+    answerable: true
+    expect:
+      metrics: [deposits_eur]
+      dimensions: [country, segment]
+      grain: null
+      start: 2026-08-01
+      end: 2026-08-31
+      filters: {}
+      order: natural
+      limit: null
+  - id: q26
+    question: "Monthly order fees on web trades since July"
+    answerable: true
+    expect:
+      metrics: [fees_eur]
+      dimensions: []
+      grain: month
+      start: 2026-07-01
+      end: 2026-09-28
+      filters: {channel: [web]}
+      order: natural
+      limit: null
+  - id: q27
+    question: "Savings plan executions for Dutch customers, month by month, this quarter"
+    answerable: true
+    expect:
+      metrics: [savings_plan_executions]
+      dimensions: []
+      grain: month
+      start: 2026-07-01
+      end: 2026-09-28
+      filters: {country: [NL]}
+      order: natural
+      limit: null
+  - id: q28
+    question: "New customers last week: paid social vs partner"
+    answerable: true
+    expect:
+      metrics: [new_customers]
+      dimensions: [acquisition_channel]
+      grain: null
+      start: 2026-09-21
+      end: 2026-09-27
+      filters: {acquisition_channel: [paid_social, partner]}
+      order: natural
+      limit: null
+  - id: q29
+    question: "What's the average ticket on German crypto trades this week?"
+    answerable: true
+    expect:
+      metrics: [average_ticket_eur]
+      dimensions: []
+      grain: null
+      start: 2026-09-28
+      end: 2026-09-28
+      filters: {country: [DE], asset_class: [crypto]}
+      order: natural
+      limit: null
+  - id: q30
+    question: "How many active traders do we have in Greece?"
+    answerable: true
+    expect:
+      metrics: [active_traders]
+      dimensions: []
+      grain: null
+      start: 2026-08-30
+      end: 2026-09-28
+      filters: {country: [GR]}
+      order: natural
+      limit: null
+  # -------------------------------------------------------------- unanswerable
+  - id: q31
+    question: "Who were our ten biggest crypto traders last week?"
+    answerable: false
+    why: "about individual customers"
+  - id: q32
+    question: "How many new customers should we expect in October?"
+    answerable: false
+    why: "a forecast"
+  - id: q33
+    question: "Why did French trading volume fall last week?"
+    answerable: false
+    why: "a why question"
+  - id: q34
+    question: "What are our total assets under custody in Germany?"
+    answerable: false
+    why: "assets under custody is not a metric in the catalog"
+  - id: q35
+    question: "Trading volume by customer age group for last month"
+    answerable: false
+    why: "age group is not a dimension in the catalog"
+  - id: q36
+    question: "Deposits by asset class in August"
+    answerable: false
+    why: "deposits_eur cannot be broken down by asset class (country and customer segment only)"
+  - id: q37
+    question: "Trading volume per customer segment last month"
+    answerable: false
+    why: "trading_volume_eur cannot be broken down by customer segment (country, asset class and trade channel only)"
+  - id: q38
+    question: "Show daily deposits for September"
+    answerable: false
+    why: "deposits_eur is a monthly metric and cannot be broken down by day"
+  - id: q39
+    question: "How much was withdrawn in the last 14 days?"
+    answerable: false
+    why: "withdrawals_eur is a monthly metric and the last 14 days is part of a month"
+  - id: q40
+    question: "How many trades did Swiss customers make last month?"
+    answerable: false
+    why: "Switzerland is not one of the 18 markets (country value not in the catalog)"

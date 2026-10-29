@@ -1,0 +1,20 @@
+name: customers
+table: raw.customers
+layer: raw
+domain: customer
+owner: {team: customer-data, contact: "#customer-data"}
+description: One row per customer, as of the last load.
+build: {kind: ingest}
+freshness: {schedule: daily, expected_by: "05:00", objective: 0.99}
+columns:
+  - {name: customer_id, type: string, class: internal, nullable: false, unique: true}
+  - {name: full_name, type: string, class: pii_direct}
+  - {name: email, type: string, class: pii_direct}
+  - {name: iban, type: string, class: pii_direct}
+  - {name: birth_date, type: date, class: pii_quasi}
+  - {name: country, type: string, class: public, nullable: false}
+  - {name: signup_at, type: timestamp, class: internal, nullable: false}
+  - {name: channel, type: string, class: internal, accepted: [organic, referral, paid_social, partner]}
+  - {name: segment, type: string, class: internal, accepted: [saver, trader, mixed]}
+quality:
+  - {check: row_count_min, value: 1000}

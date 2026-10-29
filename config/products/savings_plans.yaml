@@ -1,0 +1,18 @@
+name: savings_plans
+table: raw.savings_plans
+layer: raw
+domain: brokerage
+owner: {team: brokerage-data, contact: "#brokerage-data"}
+description: Savings plans, active and cancelled.
+build: {kind: ingest}
+freshness: {schedule: daily, expected_by: "05:00", objective: 0.99}
+columns:
+  - {name: plan_id, type: string, class: internal, nullable: false, unique: true}
+  - {name: customer_id, type: string, class: internal, nullable: false}
+  - {name: isin, type: string, class: public, nullable: false}
+  - {name: amount_eur, type: double, class: financial, nullable: false}
+  - {name: interval, type: string, class: internal, accepted: [weekly, biweekly, monthly, quarterly]}
+  - {name: created_at, type: timestamp, class: internal, nullable: false}
+  - {name: cancelled_at, type: timestamp, class: internal}
+quality:
+  - {check: positive, column: amount_eur}

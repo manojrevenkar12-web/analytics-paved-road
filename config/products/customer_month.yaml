@@ -1,0 +1,22 @@
+name: customer_month
+table: mart.customer_month
+layer: mart
+domain: customer
+owner: {team: customer-analytics, contact: "#customer-analytics"}
+description: One row per customer and month with flows and activity.
+build: {kind: dbt, model: customer_month}
+partitioning: [{source: month, transform: identity}]
+freshness: {schedule: daily, expected_by: "07:00", objective: 0.99}
+upstream: [trades, cash_movements, customers]
+columns:
+  - {name: month, type: date, class: public, nullable: false}
+  - {name: customer_id, type: string, class: internal, nullable: false}
+  - {name: country, type: string, class: public, nullable: false}
+  - {name: segment, type: string, class: internal}
+  - {name: deposits_eur, type: double, class: financial, nullable: false}
+  - {name: withdrawals_eur, type: double, class: financial, nullable: false}
+  - {name: net_inflow_eur, type: double, class: financial, nullable: false}
+  - {name: trades, type: long, class: internal, nullable: false}
+  - {name: savings_plan_executions, type: long, class: internal, nullable: false}
+quality:
+  - {check: row_count_min, value: 100}

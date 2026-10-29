@@ -1,0 +1,16 @@
+.venv/
+.lake/
+__pycache__/
+*.egg-info/
+node_modules/
+console/dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+mlflow.db
+dbt_packages/
+/tmp/
+playwright-report/
+test-results/
+integrations/n8n-nodes-paved-road/dist/
+.venv-airflow/

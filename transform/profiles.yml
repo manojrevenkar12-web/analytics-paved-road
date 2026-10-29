@@ -1,0 +1,26 @@
+# dbt-duckdb reads the raw Iceberg tables through PyIceberg (the iceberg plugin) and builds the
+# marts in a local DuckDB file; `apr publish` then writes them to Iceberg with write-audit-publish.
+# On the cluster the same models run on Spark through Kyuubi (target: spark, dbt-spark).
+paved_road:
+  target: "{{ env_var('APR_DBT_TARGET', 'duckdb') }}"
+  outputs:
+    duckdb:
+      type: duckdb
+      path: "{{ env_var('APR_WAREHOUSE') }}/transform.duckdb"
+      threads: 1
+      settings: {TimeZone: UTC}
+      plugins:
+        - module: iceberg
+          config:
+            catalog: lake
+            type: "{{ env_var('APR_DBT_CATALOG_TYPE', 'sql') }}"
+            uri: "{{ env_var('APR_DBT_CATALOG_URI') }}"
+            warehouse: "{{ env_var('APR_DBT_CATALOG_WAREHOUSE', '') }}"
+    spark:
+      type: spark
+      method: thrift
+      host: "{{ env_var('APR_KYUUBI_HOST', 'kyuubi') }}"
+      port: 10009
+      user: dbt
+      schema: mart
+      threads: 2

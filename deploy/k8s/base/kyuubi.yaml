@@ -1,0 +1,64 @@
+# Kyuubi in front of Spark: the Spark lane. In kind the engine runs Spark in local mode inside the
+# Kyuubi pod and one engine is shared (SERVER); on a real cluster engines run as Spark-on-Kubernetes
+# pods per group (kyuubi.engine.share.level=GROUP) with dynamic allocation.
+apiVersion: v1
+kind: ConfigMap
+metadata: {name: kyuubi-conf, namespace: analytics}
+data:
+  kyuubi-defaults.conf: |
+    kyuubi.frontend.protocols=THRIFT_BINARY
+    kyuubi.frontend.thrift.binary.bind.port=10009
+    kyuubi.authentication=NONE
+    kyuubi.engine.share.level=SERVER
+    kyuubi.session.engine.initialize.timeout=PT5M
+    spark.master=local[2]
+    spark.driver.memory=1500m
+    spark.sql.session.timeZone=UTC
+    spark.jars=/opt/jars/iceberg-spark-runtime.jar,/opt/jars/iceberg-aws-bundle.jar
+    spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
+    spark.sql.catalog.lake=org.apache.iceberg.spark.SparkCatalog
+    spark.sql.catalog.lake.type=rest
+    spark.sql.catalog.lake.uri=http://iceberg-rest:8181
+    spark.sql.catalog.lake.io-impl=org.apache.iceberg.aws.s3.S3FileIO
+    spark.sql.catalog.lake.s3.endpoint=http://minio:9000
+    spark.sql.catalog.lake.s3.path-style-access=true
+    spark.sql.ansi.enabled=false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: kyuubi, namespace: analytics}
+spec:
+  selector: {matchLabels: {app: kyuubi}}
+  template:
+    metadata: {labels: {app: kyuubi}}
+    spec:
+      initContainers:
+        - name: iceberg-jars
+          image: curlimages/curl:8.13.0
+          command: [sh, -c]
+          args:
+            - >-
+              curl -fsSL -o /opt/jars/iceberg-spark-runtime.jar
+              https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-3.5_2.12/1.9.2/iceberg-spark-runtime-3.5_2.12-1.9.2.jar &&
+              curl -fsSL -o /opt/jars/iceberg-aws-bundle.jar
+              https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-aws-bundle/1.9.2/iceberg-aws-bundle-1.9.2.jar
+          volumeMounts: [{name: jars, mountPath: /opt/jars}]
+      containers:
+        - name: kyuubi
+          image: apache/kyuubi:1.10.2-spark
+          envFrom: [{secretRef: {name: apr-s3}}]
+          env: [{name: AWS_REGION, value: us-east-1}]
+          ports: [{containerPort: 10009}]
+          readinessProbe: {tcpSocket: {port: 10009}, initialDelaySeconds: 10}
+          resources: {requests: {cpu: "1", memory: 3Gi}}
+          volumeMounts:
+            - {name: jars, mountPath: /opt/jars}
+            - {name: conf, mountPath: /opt/kyuubi/conf/kyuubi-defaults.conf, subPath: kyuubi-defaults.conf}
+      volumes:
+        - {name: jars, emptyDir: {}}
+        - {name: conf, configMap: {name: kyuubi-conf}}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: kyuubi, namespace: analytics}
+spec: {selector: {app: kyuubi}, ports: [{port: 10009}]}

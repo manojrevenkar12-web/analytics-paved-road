@@ -1,0 +1,79 @@
+# The query gateway. Stateless: plans, routes, caches per pod; identity from the ingress (oauth2-proxy sets X-User).
+apiVersion: v1
+kind: ConfigMap
+metadata: {name: apr-lake, namespace: analytics}
+data:
+  APR_CATALOG: rest
+  APR_ICEBERG_REST_URI: http://iceberg-rest:8181
+  APR_S3_ENDPOINT: http://minio:9000
+  APR_KYUUBI_HOST: kyuubi
+  AWS_REGION: us-east-1
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: apr-gateway
+  namespace: analytics
+  # on EKS: eks.amazonaws.com/role-arn = the gateway role from deploy/terraform (read-only on the lake)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: apr-gateway, namespace: analytics, labels: {app: apr-gateway}}
+spec:
+  replicas: 2
+  selector: {matchLabels: {app: apr-gateway}}
+  template:
+    metadata:
+      labels: {app: apr-gateway}
+      annotations: {prometheus.io/scrape: "true", prometheus.io/port: "8000", prometheus.io/path: /metrics}
+    spec:
+      serviceAccountName: apr-gateway
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: gateway
+          image: analytics-paved-road:ci
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 8000, name: http}]
+          envFrom: [{configMapRef: {name: apr-lake}}, {secretRef: {name: apr-s3}}]
+          env: [{name: APR_WAREHOUSE, value: /data}]
+          readinessProbe: {httpGet: {path: /api/health, port: http}, periodSeconds: 5}
+          livenessProbe: {httpGet: {path: /api/health, port: http}, periodSeconds: 20, failureThreshold: 3}
+          resources:
+            requests: {cpu: 500m, memory: 1Gi}
+            limits: {cpu: "2", memory: 4Gi}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          volumeMounts: [{name: data, mountPath: /data}, {name: tmp, mountPath: /tmp}]
+      volumes: [{name: data, emptyDir: {}}, {name: tmp, emptyDir: {}}]
+---
+apiVersion: v1
+kind: Service
+metadata: {name: apr-gateway, namespace: analytics}
+spec:
+  selector: {app: apr-gateway}
+  ports: [{port: 8000, targetPort: http, name: http}]
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: apr-gateway, namespace: analytics}
+spec:
+  minAvailable: 1
+  selector: {matchLabels: {app: apr-gateway}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {name: apr-gateway, namespace: analytics}
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: apr-gateway}
+  minReplicas: 2
+  maxReplicas: 8
+  metrics: [{type: Resource, resource: {name: cpu, target: {type: Utilization, averageUtilization: 65}}}]
+---
+# Only the ingress and Prometheus reach the gateway; the gateway reaches the catalog, storage and Kyuubi.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: apr-gateway, namespace: analytics}
+spec:
+  podSelector: {matchLabels: {app: apr-gateway}}
+  policyTypes: [Ingress]
+  ingress:
+    - ports: [{port: 8000}]

@@ -1,0 +1,134 @@
+# The semantic layer: metrics defined once, on data products, and compiled to SQL that goes
+# through the gateway like any other query (same access rules, same limits, same audit).
+# A question in plain language is answered only if it maps onto these definitions.
+sources:
+  daily_trading:
+    table: mart.daily_trading
+    alias: d
+    time: trade_date
+    dimensions: {country: d.country, asset_class: d.asset_class, channel: d.channel}
+  trades:
+    table: raw.trades
+    alias: t
+    time: executed_at
+    joins:
+      c: {table: raw.customers, condition: c.customer_id = t.customer_id}
+      i: {table: raw.instruments, condition: i.isin = t.isin}
+    dimensions: {country: c.country, asset_class: i.asset_class, channel: t.channel, segment: c.segment}
+  customer_month:
+    table: mart.customer_month
+    alias: m
+    time: month
+    grain_floor: month              # monthly data: no daily or weekly breakdowns
+    dimensions: {country: m.country, segment: m.segment}
+  customers:
+    table: raw.customers
+    alias: c
+    time: signup_at
+    dimensions: {country: c.country, segment: c.segment, acquisition_channel: c.channel}
+
+dimensions:
+  country: {label: Country, synonyms: [country, countries, market, markets]}
+  asset_class: {label: Asset class, synonyms: [asset class, asset classes, asset type, product type]}
+  channel: {label: Trade channel, values: [app, web, savings_plan], synonyms: [channel, channels, trade channel]}
+  segment: {label: Customer segment, values: [saver, mixed, trader], synonyms: [segment, segments, customer type]}
+  acquisition_channel: {label: Acquisition channel, values: [organic, referral, paid_social, partner],
+                        synonyms: [acquisition channel, signup channel, marketing channel]}
+
+metrics:
+  trades:
+    label: Trades
+    description: Executed orders, manual and savings plan executions.
+    source: daily_trading
+    expr: SUM(d.trades)
+    unit: count
+    synonyms: [trades, number of trades, trade count, orders, executions, transactions]
+  trading_volume_eur:
+    label: Trading volume
+    description: Buy plus sell volume in EUR.
+    source: daily_trading
+    expr: SUM(d.buy_volume_eur + d.sell_volume_eur)
+    unit: eur
+    synonyms: [trading volume, volume, traded volume, turnover]
+  buy_volume_eur:
+    label: Buy volume
+    description: Volume of buy orders in EUR.
+    source: daily_trading
+    expr: SUM(d.buy_volume_eur)
+    unit: eur
+    synonyms: [buy volume, purchases, bought]
+  sell_volume_eur:
+    label: Sell volume
+    description: Volume of sell orders in EUR.
+    source: daily_trading
+    expr: SUM(d.sell_volume_eur)
+    unit: eur
+    synonyms: [sell volume, sales volume, sold]
+  net_buy_eur:
+    label: Net buying
+    description: Buy volume minus sell volume in EUR.
+    source: daily_trading
+    expr: SUM(d.buy_volume_eur - d.sell_volume_eur)
+    unit: eur
+    synonyms: [net buying, net buy, net flow into securities]
+  fees_eur:
+    label: Order fees
+    description: Order fees charged in EUR (savings plan executions are free).
+    source: daily_trading
+    expr: SUM(d.fees_eur)
+    unit: eur
+    synonyms: [fees, order fees, fee revenue, commissions]
+  average_ticket_eur:
+    label: Average ticket
+    description: Trading volume per trade in EUR.
+    source: daily_trading
+    expr: SUM(d.buy_volume_eur + d.sell_volume_eur) / NULLIF(SUM(d.trades), 0)
+    unit: eur
+    synonyms: [average ticket, average trade size, average order size, ticket size]
+  active_traders:
+    label: Active traders
+    description: Distinct customers with at least one executed trade in the period.
+    source: trades
+    expr: COUNT(DISTINCT t.customer_id)
+    unit: count
+    synonyms: [active traders, traders, customers who traded, trading customers, active investors]
+  deposits_eur:
+    label: Deposits
+    description: Money deposited into cash accounts in EUR.
+    source: customer_month
+    expr: SUM(m.deposits_eur)
+    unit: eur
+    synonyms: [deposits, money deposited, inflows, top-ups]
+  withdrawals_eur:
+    label: Withdrawals
+    description: Money withdrawn from cash accounts in EUR.
+    source: customer_month
+    expr: SUM(m.withdrawals_eur)
+    unit: eur
+    synonyms: [withdrawals, money withdrawn, outflows, payouts]
+  net_inflow_eur:
+    label: Net inflow
+    description: Deposits minus withdrawals in EUR.
+    source: customer_month
+    expr: SUM(m.net_inflow_eur)
+    unit: eur
+    synonyms: [net inflow, net inflows, net deposits, net new money]
+  savings_plan_executions:
+    label: Savings plan executions
+    description: Savings plan orders executed.
+    source: customer_month
+    expr: SUM(m.savings_plan_executions)
+    unit: count
+    synonyms: [savings plan executions, savings plans executed, executed savings plans, sparplan executions]
+  new_customers:
+    label: New customers
+    description: Customers who signed up in the period.
+    source: customers
+    expr: COUNT(*)
+    unit: count
+    synonyms: [new customers, signups, sign-ups, new accounts, customer acquisition, registrations]
+
+time:
+  # "today" for relative periods is the last complete day in the lake, not the wall clock
+  default_window_days: 30
+  grains: [day, week, month, quarter, year]

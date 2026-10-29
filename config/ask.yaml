@@ -1,0 +1,5 @@
+# Conversational analytics. The parser turns a question into a MetricQuery; code runs it
+# through the gateway as the asking user and writes the answer from the result.
+parser: sim                 # sim (rules, reproducible) | claude (needs ANTHROPIC_API_KEY); APR_ASK overrides
+claude:
+  model: claude-sonnet-5-5

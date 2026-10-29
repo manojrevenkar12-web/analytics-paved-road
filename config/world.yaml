@@ -1,0 +1,62 @@
+# The simulated brokerage the platform serves. Deterministic for a seed.
+# Nothing here is Trade Republic data; rates are chosen to be plausible for a European neobroker.
+seed: 20261029
+start: 2026-06-01
+days: 120
+customers: 20000
+signed_up_before_start: 0.8        # the rest sign up during the period
+countries:            # share of customers (18 markets)
+  DE: 0.34
+  FR: 0.12
+  IT: 0.10
+  ES: 0.09
+  AT: 0.05
+  NL: 0.05
+  SE: 0.04
+  BE: 0.03
+  PT: 0.03
+  IE: 0.02
+  FI: 0.02
+  GR: 0.02
+  SK: 0.02
+  SI: 0.02
+  LT: 0.02
+  LV: 0.015
+  EE: 0.015
+  LU: 0.01
+acquisition_channels: {organic: 0.45, referral: 0.25, paid_social: 0.2, partner: 0.1}
+segments:
+  # share of customers, chance of a manual trade on a trading day, median ticket (EUR), asset mix
+  saver:  {share: 0.5, trade_rate: 0.04, ticket_eur: 250,  mix: {stock: 0.25, etf: 0.65, crypto: 0.05, bond: 0.05}}
+  mixed:  {share: 0.3, trade_rate: 0.20, ticket_eur: 500,  mix: {stock: 0.5, etf: 0.3, crypto: 0.12, bond: 0.08}}
+  trader: {share: 0.2, trade_rate: 0.60, ticket_eur: 900,  mix: {stock: 0.62, etf: 0.08, crypto: 0.25, bond: 0.05}}
+buy_share: 0.62
+order_fee_eur: 1.0                  # manual orders; savings plan executions are free
+trade_channels: {app: 0.86, web: 0.14}
+venues: {LSX: 0.8, TRADEGATE: 0.12, GETTEX: 0.08}
+instruments:
+  stock: 900
+  etf: 400
+  crypto: 40
+  bond: 160
+annual_volatility: {stock: 0.32, etf: 0.16, crypto: 0.7, bond: 0.06}
+savings_plans:
+  share_of_customers: {saver: 0.85, mixed: 0.5, trader: 0.15}
+  plans_per_customer: [1, 2, 3]
+  plans_weights: [0.6, 0.3, 0.1]
+  amount_eur_median: 75
+  interval: {weekly: 0.08, biweekly: 0.17, monthly: 0.7, quarterly: 0.05}
+  execution_days: [2, 16]          # monthly plans run on the 2nd or the 16th
+  monthly_cancel_rate: 0.015
+cash:
+  deposits_per_month: 1.4
+  deposit_median_eur: 300
+  withdrawals_per_month: 0.25
+  withdrawal_median_eur: 400
+  card_holders: 0.3
+  card_spend_per_day: 0.5
+  card_spend_median_eur: 25
+  saveback_rate: 0.01               # paid on the 1st for last month's card spend
+  saveback_cap_eur: 15
+  interest_rate: 0.02               # paid on the 1st on the cash balance
+  balance_median_eur: 2500

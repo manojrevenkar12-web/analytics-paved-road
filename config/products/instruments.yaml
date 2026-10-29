@@ -1,0 +1,15 @@
+name: instruments
+table: raw.instruments
+layer: raw
+domain: markets
+owner: {team: markets-data, contact: "#markets-data"}
+description: Tradable instruments.
+build: {kind: ingest}
+freshness: {schedule: daily, expected_by: "05:00", objective: 0.99}
+columns:
+  - {name: isin, type: string, class: public, nullable: false, unique: true}
+  - {name: name, type: string, class: public}
+  - {name: asset_class, type: string, class: public, nullable: false, accepted: [stock, etf, crypto, bond]}
+  - {name: currency, type: string, class: public}
+quality:
+  - {check: row_count_min, value: 100}

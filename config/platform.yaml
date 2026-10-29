@@ -1,0 +1,29 @@
+# The analytical plane: lake, query lanes, limits. Settings live here, not in code.
+lake:
+  catalog: local                   # local (SQLite catalog) | rest (Iceberg REST catalog)
+  local_warehouse: .lake           # relative to the repository
+  rest_uri: http://iceberg-rest:8181
+  s3_endpoint: http://minio:9000
+  maintenance:
+    max_manifests: 16              # compact a table's files and manifests above this (daily appends add one each)
+    keep_snapshots: 10             # older snapshots are expired; time travel reaches back this far
+gateway:
+  fast_lane_max_bytes: 268435456   # 256 MiB: smaller scans run in-process on DuckDB
+  interactive_row_limit: 10000     # LIMIT added to row-level interactive queries without one
+  cache_max_bytes: 536870912       # 512 MiB of results, keyed by table snapshots
+  queue_timeout_s: {fast: 5.0, spark: 60.0}   # wait for a slot before refusing with 429
+  catalog_cache_s: 30              # table metadata reused for this long (Iceberg snapshots are immutable)
+  # when the Spark lane is down, queries up to this size run on the fast lane instead (slower, but answered)
+  degrade_max_bytes: 1073741824
+  concurrency:
+    fast: 8
+    spark: 4
+    per_user: 2
+  spark:
+    kyuubi_host: kyuubi
+    kyuubi_port: 10009
+    catalog: lake                  # spark.sql.catalog.lake = Iceberg REST catalog in Kyuubi
+    user_proxy: true               # Kyuubi runs each query as the asking user (hive.server2.proxy.user)
+    # modelled latency of the Spark lane when it is not connected (workload simulation only)
+    model_startup_s: 4.0
+    model_throughput_bytes_per_s: 209715200

@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "analytics-paved-road"
+version = "0.1.0"
+description = "A self-serve analytical plane on Apache Iceberg: a query gateway that routes between DuckDB and Spark (Kyuubi), data product contracts that scaffold the paved road, SLOs with error budgets, and governed conversational analytics."
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "pyiceberg[sql-sqlite,pyarrow,s3fs,pyiceberg-core]>=0.12,<0.13",
+  "pyarrow>=19",
+  "duckdb>=1.3",
+  "sqlglot>=30,<31",
+  "numpy>=2.1",
+  "pydantic>=2.11",
+  "pyyaml>=6.0",
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.34",
+  "prometheus-client>=0.21",
+  "httpx>=0.28",
+]
+
+[project.optional-dependencies]
+# the Spark lane: Kyuubi speaks the HiveServer2 Thrift protocol
+spark = ["pyhive[hive_pure_sasl]>=0.7", "thrift>=0.20"]
+# Claude as the question parser and answer writer (the simulated parser needs nothing)
+ai = ["anthropic>=0.60"]
+# transformations
+dbt = ["dbt-duckdb>=1.9"]
+dev = ["pytest>=8.3", "pytest-asyncio>=1.0", "ruff>=0.12", "mypy>=1.16", "types-PyYAML", "playwright==1.56.0"]
+
+[project.scripts]
+apr = "apr.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/apr"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "slow: builds the full 120-day lake",
+  "spark: needs a Kyuubi endpoint (APR_KYUUBI_HOST)",
+  "e2e: drives the console in a browser",
+]
+addopts = "-p no:cacheprovider"
+filterwarnings = ["ignore::DeprecationWarning", "ignore:Delete operation did not match any records:UserWarning"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "NPY"]
+ignore = ["RUF001", "RUF002", "RUF003", "E501", "B905", "RUF012", "SIM108", "E741"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+files = ["src/apr"]
+plugins = ["pydantic.mypy"]
+
+# sqlglot's expression types (Expr vs Expression) and PyIceberg's keyword-only predicate signatures
+# are looser at runtime than in their annotations; the planner is covered by tests instead.
+[[tool.mypy.overrides]]
+module = ["apr.gateway.planner"]
+disable_error_code = ["arg-type", "return-value", "call-arg", "abstract", "union-attr", "attr-defined"]

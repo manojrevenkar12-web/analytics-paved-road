@@ -1,0 +1,38 @@
+# Who may read what. Columns carry a classification in the data product contracts;
+# a role sees a class in clear, masked, or not at all (a query naming it is refused).
+classes: [public, internal, financial, pii_quasi, pii_direct]
+# How a masked column is shown, by type. Masks keep joins and counts working:
+# a hashed e-mail still joins to itself; a birth date keeps its year.
+masking:
+  string: sha256        # hex SHA-256 of the value
+  date: year            # first day of the year
+  timestamp: day        # midnight of the day
+  long: "null"
+  double: "null"
+  boolean: "null"
+roles:
+  analyst:
+    description: Analysts and data scientists across the company
+    clear: [public, internal, financial]
+    masked: [pii_quasi, pii_direct]
+    max_scan_bytes: 21474836480       # 20 GiB per query
+  product_manager:
+    description: Product managers exploring metrics
+    clear: [public, internal, financial]
+    denied: [pii_quasi, pii_direct]
+    max_scan_bytes: 5368709120        # 5 GiB
+  compliance:
+    description: Compliance and fraud investigators
+    clear: [public, internal, financial, pii_quasi, pii_direct]
+    max_scan_bytes: 53687091200       # 50 GiB
+  automation:
+    description: n8n and other service integrations
+    clear: [public, internal]
+    denied: [financial, pii_quasi, pii_direct]
+    max_scan_bytes: 1073741824        # 1 GiB
+users:
+  ana: analyst
+  ben: analyst
+  pia: product_manager
+  carl: compliance
+  n8n: automation

@@ -1,0 +1,26 @@
+name: trades
+table: raw.trades
+layer: raw
+domain: brokerage
+owner: {team: brokerage-data, contact: "#brokerage-data"}
+description: Every executed order (manual and savings-plan executions).
+build: {kind: ingest}
+partitioning: [{source: executed_at, transform: day}]
+require_partition_filter: true
+freshness: {schedule: daily, expected_by: "06:00", objective: 0.99}
+columns:
+  - {name: trade_id, type: string, class: internal, nullable: false, unique: true}
+  - {name: customer_id, type: string, class: internal, nullable: false}
+  - {name: isin, type: string, class: public, nullable: false}
+  - {name: executed_at, type: timestamp, class: internal, nullable: false}
+  - {name: side, type: string, class: internal, nullable: false, accepted: [buy, sell]}
+  - {name: quantity, type: double, class: financial}
+  - {name: price_eur, type: double, class: financial}
+  - {name: amount_eur, type: double, class: financial, nullable: false}
+  - {name: fee_eur, type: double, class: financial}
+  - {name: channel, type: string, class: internal, accepted: [app, web, savings_plan]}
+  - {name: venue, type: string, class: internal}
+quality:
+  - {check: positive, column: amount_eur}
+  - {check: row_count_min, value: 1000}
+consumers: [daily_trading, customer_month]

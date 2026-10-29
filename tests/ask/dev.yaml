@@ -1,0 +1,63 @@
+# Development questions for the question parser (the parser is tuned on these).
+# The held-out set in heldout/ask/ is written separately, without looking at the parser.
+data_through: 2026-09-28
+questions:
+  - q: What was the trading volume last month?
+    expect: {metrics: [trading_volume_eur], start: 2026-08-01, end: 2026-08-31}
+  - q: How many trades yesterday?
+    expect: {metrics: [trades], start: 2026-09-28, end: 2026-09-28}
+  - q: Trades per day in the last 7 days
+    expect: {metrics: [trades], grain: day, start: 2026-09-22, end: 2026-09-28}
+  - q: Top 5 countries by trading volume this month
+    expect: {metrics: [trading_volume_eur], dimensions: [country], start: 2026-09-01, end: 2026-09-28, order: metric_desc, limit: 5}
+  - q: Which asset class had the most trades in August?
+    expect: {metrics: [trades], dimensions: [asset_class], start: 2026-08-01, end: 2026-08-31, order: metric_desc, limit: 1}
+  - q: Net inflow by country last month
+    expect: {metrics: [net_inflow_eur], dimensions: [country], start: 2026-08-01, end: 2026-08-31}
+  - q: Deposits in July 2026
+    expect: {metrics: [deposits_eur], start: 2026-07-01, end: 2026-07-31}
+  - q: How many active traders in Germany last week?
+    expect: {metrics: [active_traders], start: 2026-09-21, end: 2026-09-27, filters: {country: [DE]}}
+  - q: Compare crypto and ETF trading volume in Q3
+    expect: {metrics: [trading_volume_eur], dimensions: [asset_class], start: 2026-07-01, end: 2026-09-28, filters: {asset_class: [crypto, etf]}}
+  - q: Order fees by channel since July
+    expect: {metrics: [fees_eur], dimensions: [channel], start: 2026-07-01, end: 2026-09-28}
+  - q: Average ticket size for stocks in the last 30 days
+    expect: {metrics: [average_ticket_eur], start: 2026-08-30, end: 2026-09-28, filters: {asset_class: [stock]}}
+  - q: New customers by acquisition channel in September
+    expect: {metrics: [new_customers], dimensions: [acquisition_channel], start: 2026-09-01, end: 2026-09-28}
+  - q: Savings plan executions per month this quarter
+    expect: {metrics: [savings_plan_executions], grain: month, start: 2026-07-01, end: 2026-09-28}
+  - q: Weekly trades for crypto since August
+    expect: {metrics: [trades], grain: week, start: 2026-08-01, end: 2026-09-28, filters: {asset_class: [crypto]}}
+  - q: Which country had the lowest net inflow last month?
+    expect: {metrics: [net_inflow_eur], dimensions: [country], start: 2026-08-01, end: 2026-08-31, order: metric_asc, limit: 1}
+  - q: Buy volume vs sell volume in France in August
+    expect: {metrics: [buy_volume_eur, sell_volume_eur], start: 2026-08-01, end: 2026-08-31, filters: {country: [FR]}}
+  - q: Withdrawals by segment in Q3
+    expect: {metrics: [withdrawals_eur], dimensions: [segment], start: 2026-07-01, end: 2026-09-28}
+  - q: trades on the app vs web this week
+    expect: {metrics: [trades], dimensions: [channel], start: 2026-09-28, end: 2026-09-28, filters: {channel: [app, web]}}
+  - q: How many trades came from savings plans in the last 14 days?
+    expect: {metrics: [trades], start: 2026-09-15, end: 2026-09-28, filters: {channel: [savings_plan]}}
+  - q: Net buying in Italy and Spain from 2026-09-01 to 2026-09-15
+    expect: {metrics: [net_buy_eur], dimensions: [country], start: 2026-09-01, end: 2026-09-15, filters: {country: [IT, ES]}}
+  - q: Trading volume on 2026-09-10
+    expect: {metrics: [trading_volume_eur], start: 2026-09-10, end: 2026-09-10}
+  - q: How many signups from referrals last month?
+    expect: {metrics: [new_customers], start: 2026-08-01, end: 2026-08-31, filters: {acquisition_channel: [referral]}}
+  - q: Active traders by asset class in the past 3 days
+    expect: {metrics: [active_traders], dimensions: [asset_class], start: 2026-09-26, end: 2026-09-28}
+  - q: Monthly deposits by country since June
+    expect: {metrics: [deposits_eur], dimensions: [country], grain: month, start: 2026-06-01, end: 2026-09-28}
+  - q: Fees in the last 2 months
+    expect: {metrics: [fees_eur], start: 2026-07-01, end: 2026-08-31}
+refuse:
+  - What is the email of customer C1000042?
+  - Which customers sold the most bitcoin?
+  - Will trading volume grow next month?
+  - Why did deposits drop in August?
+  - Trading volume by city last month
+  - What is our profit margin?
+  - Deposits by asset class last month
+  - Daily deposits last week

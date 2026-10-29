@@ -1,0 +1,22 @@
+name: daily_trading
+table: mart.daily_trading
+layer: mart
+domain: brokerage
+owner: {team: brokerage-analytics, contact: "#brokerage-analytics"}
+description: Trading activity per day, country, asset class and channel.
+build: {kind: dbt, model: daily_trading}
+partitioning: [{source: trade_date, transform: month}]
+freshness: {schedule: daily, expected_by: "07:00", objective: 0.99}
+upstream: [trades, customers, instruments]
+columns:
+  - {name: trade_date, type: date, class: public, nullable: false}
+  - {name: country, type: string, class: public, nullable: false}
+  - {name: asset_class, type: string, class: public, nullable: false}
+  - {name: channel, type: string, class: internal, nullable: false}
+  - {name: trades, type: long, class: internal, nullable: false}
+  - {name: active_traders, type: long, class: internal, nullable: false}
+  - {name: buy_volume_eur, type: double, class: financial, nullable: false}
+  - {name: sell_volume_eur, type: double, class: financial, nullable: false}
+  - {name: fees_eur, type: double, class: financial, nullable: false}
+quality:
+  - {check: row_count_min, value: 100}

@@ -1,0 +1,15 @@
+name: prices_daily
+table: raw.prices_daily
+layer: raw
+domain: markets
+owner: {team: markets-data, contact: "#markets-data"}
+description: End-of-day price per instrument, in EUR.
+build: {kind: ingest}
+partitioning: [{source: price_date, transform: month}]
+freshness: {schedule: daily, expected_by: "05:00", objective: 0.99}
+columns:
+  - {name: isin, type: string, class: public, nullable: false}
+  - {name: price_date, type: date, class: public, nullable: false}
+  - {name: close_eur, type: double, class: public, nullable: false}
+quality:
+  - {check: positive, column: close_eur}

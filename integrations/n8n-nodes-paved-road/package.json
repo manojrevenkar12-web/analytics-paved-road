@@ -1,0 +1,30 @@
+{
+  "name": "n8n-nodes-paved-road",
+  "version": "0.1.0",
+  "description": "n8n node for the analytics paved road: run governed SQL, ask metric questions and check data freshness through the query gateway.",
+  "license": "Apache-2.0",
+  "keywords": ["n8n-community-node-package", "n8n", "iceberg", "analytics"],
+  "author": {"name": "Manoj Kumar Prakash", "email": "manojrevenkar70@gmail.com"},
+  "repository": {"type": "git", "url": "https://github.com/manojrevenkar12-web/analytics-paved-road.git", "directory": "integrations/n8n-nodes-paved-road"},
+  "engines": {"node": ">=22"},
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": ["dist/credentials/PavedRoadApi.credentials.js"],
+    "nodes": ["dist/nodes/PavedRoad/PavedRoad.node.js"]
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "n8n-workflow": "2.44.2",
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
+  },
+  "peerDependencies": {"n8n-workflow": "*"}
+}

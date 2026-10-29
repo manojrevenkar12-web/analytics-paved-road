@@ -1,0 +1,17 @@
+# kubectl apply -k deploy   (the gateway, Kyuubi, the lake for development, Prometheus and Grafana)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - k8s/base/namespace.yaml
+  - k8s/base/lake.yaml
+  - k8s/base/kyuubi.yaml
+  - k8s/base/gateway.yaml
+  - k8s/base/observability.yaml
+configMapGenerator:
+  - name: apr-slo-rules
+    namespace: analytics
+    files: [slo.rules.yaml=prometheus/rules/slo.rules.yaml]
+  - name: apr-dashboards
+    namespace: analytics
+    files: [paved-road.json=grafana/dashboards/paved-road.json]
+generatorOptions: {disableNameSuffixHash: true}
