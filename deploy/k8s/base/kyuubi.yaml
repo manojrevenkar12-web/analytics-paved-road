@@ -1,6 +1,8 @@
 # Kyuubi in front of Spark: the Spark lane. In kind the engine runs Spark in local mode inside the
 # Kyuubi pod and one engine is shared (SERVER); on a real cluster engines run as Spark-on-Kubernetes
 # pods per group (kyuubi.engine.share.level=GROUP) with dynamic allocation.
+# The kyuubi:1.10.2-spark image runs Java 8, so the Iceberg runtime is 1.6.1, the last release built
+# for Java 8; it talks to the 1.9 REST catalog over the same REST protocol.
 apiVersion: v1
 kind: ConfigMap
 metadata: {name: kyuubi-conf, namespace: analytics}
@@ -40,9 +42,9 @@ spec:
           args:
             - >-
               curl -fsSL -o /opt/jars/iceberg-spark-runtime.jar
-              https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-3.5_2.12/1.9.2/iceberg-spark-runtime-3.5_2.12-1.9.2.jar &&
+              https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-3.5_2.12/1.6.1/iceberg-spark-runtime-3.5_2.12-1.6.1.jar &&
               curl -fsSL -o /opt/jars/iceberg-aws-bundle.jar
-              https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-aws-bundle/1.9.2/iceberg-aws-bundle-1.9.2.jar
+              https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-aws-bundle/1.6.1/iceberg-aws-bundle-1.6.1.jar
           volumeMounts: [{name: jars, mountPath: /opt/jars}]
       containers:
         - name: kyuubi
