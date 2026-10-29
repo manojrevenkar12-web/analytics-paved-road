@@ -1,0 +1,87 @@
+{
+  "generated_by": "apr simulate",
+  "days": 30,
+  "users": 300,
+  "scale": {
+    "default": 500.0,
+    "mart.daily_trading": 1.0,
+    "raw.instruments": 1.0,
+    "raw.prices_daily": 1.0
+  },
+  "distinct_queries": {
+    "gateway": 9578,
+    "baseline": 2634
+  },
+  "gateway": {
+    "queries": 231305,
+    "human_queries": 123305,
+    "answered_share": 0.9617951645928493,
+    "p50_s": 0.034999999999999996,
+    "p95_s": 3.1983853785321106,
+    "p99_s": 5.107667322020857,
+    "lanes": {
+      "spark": {
+        "queries": 91523,
+        "p50_s": 0.034999999999999996,
+        "p95_s": 3.293565341341306
+      },
+      "fast": {
+        "queries": 114059,
+        "p50_s": 0.034999999999999996,
+        "p95_s": 0.055
+      }
+    },
+    "scanned_tb": 21.593046785306,
+    "scan_cost_usd": 107.96523392653,
+    "human_cache_share": 0.8896963245754992,
+    "p50_uncached_s": 3.0492295143194497,
+    "p95_uncached_s": 5.678806082671507,
+    "cache_hits": 194745,
+    "cache_hit_share": 0.9472862410133183,
+    "outcomes": {
+      "ok": 205582,
+      "partition_filter_required": 19807,
+      "denied_column": 5886,
+      "lane_unavailable": 29,
+      "engine_error": 1
+    },
+    "pii_cells_exposed": 0,
+    "retries": 21721,
+    "retries_answered": 21699,
+    "degraded": 11
+  },
+  "baseline": {
+    "queries": 209584,
+    "human_queries": 101584,
+    "answered_share": 0.9959147109781068,
+    "p50_s": 2.9429788384586573,
+    "p95_s": 6.4936374844051885,
+    "p99_s": 8.811515633943467,
+    "lanes": {
+      "spark": {
+        "queries": 209041,
+        "p50_s": 2.6250040540471673,
+        "p95_s": 5.531601357739419
+      }
+    },
+    "scanned_tb": 224.700340579608,
+    "scan_cost_usd": 1123.50170289804,
+    "human_cache_share": 0.0,
+    "p50_uncached_s": 2.9429788384586573,
+    "p95_uncached_s": 6.4936374844051885,
+    "cache_hits": 0,
+    "cache_hit_share": 0.0,
+    "outcomes": {
+      "ok": 209041,
+      "lane_unavailable": 484,
+      "engine_error": 59
+    },
+    "pii_cells_exposed": 4231200,
+    "retries": 0,
+    "retries_answered": 0,
+    "degraded": 0
+  },
+  "gateway_leaks": 0,
+  "gateway_pods_usd": 420.0,
+  "runtime_s": 507.6
+}

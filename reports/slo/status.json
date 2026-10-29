@@ -1,0 +1,1289 @@
+{
+  "window_days": 30,
+  "from": "2026-08-30",
+  "to": "2026-09-28",
+  "simulated": true,
+  "objectives": [
+    {
+      "name": "gateway_availability",
+      "description": "Queries the platform accepted that did not fail on the platform's side",
+      "objective": 0.995,
+      "good": 205582.0,
+      "total": 205612.0,
+      "ratio": 0.9998540941190203,
+      "budget_remaining": 0.9708188238040582,
+      "alerts": [],
+      "daily": [
+        {
+          "day": "2026-08-30",
+          "good": 3479.0,
+          "total": 3479.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-08-31",
+          "good": 8281.0,
+          "total": 8281.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-01",
+          "good": 8357.0,
+          "total": 8357.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-02",
+          "good": 8151.0,
+          "total": 8151.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-03",
+          "good": 8309.0,
+          "total": 8309.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-04",
+          "good": 8204.0,
+          "total": 8204.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-05",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-06",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-07",
+          "good": 8290.0,
+          "total": 8291.0,
+          "ratio": 0.9998793872874201
+        },
+        {
+          "day": "2026-09-08",
+          "good": 8254.0,
+          "total": 8254.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-09",
+          "good": 8224.0,
+          "total": 8224.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-10",
+          "good": 8334.0,
+          "total": 8334.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-11",
+          "good": 8349.0,
+          "total": 8349.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-12",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-13",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-14",
+          "good": 8285.0,
+          "total": 8285.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-15",
+          "good": 8245.0,
+          "total": 8245.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-16",
+          "good": 8205.0,
+          "total": 8205.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-17",
+          "good": 8158.0,
+          "total": 8158.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-18",
+          "good": 8165.0,
+          "total": 8165.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-19",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-20",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-21",
+          "good": 8316.0,
+          "total": 8316.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-22",
+          "good": 8344.0,
+          "total": 8344.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-23",
+          "good": 8186.0,
+          "total": 8215.0,
+          "ratio": 0.9964698721850274
+        },
+        {
+          "day": "2026-09-24",
+          "good": 8187.0,
+          "total": 8187.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-25",
+          "good": 8308.0,
+          "total": 8308.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-26",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-27",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-28",
+          "good": 8151.0,
+          "total": 8151.0,
+          "ratio": 1.0
+        }
+      ],
+      "budget": [
+        {
+          "day": "2026-08-30",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-08-31",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-01",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-02",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-03",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-04",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-05",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-06",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-07",
+          "budget_remaining": 0.9966817095832228
+        },
+        {
+          "day": "2026-09-08",
+          "budget_remaining": 0.9970813997606748
+        },
+        {
+          "day": "2026-09-09",
+          "budget_remaining": 0.9973941368078176
+        },
+        {
+          "day": "2026-09-10",
+          "budget_remaining": 0.9976493817874101
+        },
+        {
+          "day": "2026-09-11",
+          "budget_remaining": 0.9978594286815151
+        },
+        {
+          "day": "2026-09-12",
+          "budget_remaining": 0.9979388455473911
+        },
+        {
+          "day": "2026-09-13",
+          "budget_remaining": 0.9980125803662815
+        },
+        {
+          "day": "2026-09-14",
+          "budget_remaining": 0.9981637562202758
+        },
+        {
+          "day": "2026-09-15",
+          "budget_remaining": 0.9982929764516102
+        },
+        {
+          "day": "2026-09-16",
+          "budget_remaining": 0.9984046965732882
+        },
+        {
+          "day": "2026-09-17",
+          "budget_remaining": 0.9985021643724817
+        },
+        {
+          "day": "2026-09-18",
+          "budget_remaining": 0.9985884777438229
+        },
+        {
+          "day": "2026-09-19",
+          "budget_remaining": 0.998623452244117
+        },
+        {
+          "day": "2026-09-20",
+          "budget_remaining": 0.9986567354641986
+        },
+        {
+          "day": "2026-09-21",
+          "budget_remaining": 0.9987277920194393
+        },
+        {
+          "day": "2026-09-22",
+          "budget_remaining": 0.9987919130660642
+        },
+        {
+          "day": "2026-09-23",
+          "budget_remaining": 0.9654708055661062
+        },
+        {
+          "day": "2026-09-24",
+          "budget_remaining": 0.9670244513693097
+        },
+        {
+          "day": "2026-09-25",
+          "budget_remaining": 0.9684643726249731
+        },
+        {
+          "day": "2026-09-26",
+          "budget_remaining": 0.9690499894254131
+        },
+        {
+          "day": "2026-09-27",
+          "budget_remaining": 0.9696142529410872
+        },
+        {
+          "day": "2026-09-28",
+          "budget_remaining": 0.9708188238040582
+        }
+      ]
+    },
+    {
+      "name": "spark_lane_availability",
+      "description": "Queries sent to the Spark lane that it answered",
+      "objective": 0.99,
+      "good": 9964.0,
+      "total": 9994.0,
+      "ratio": 0.9969981989193516,
+      "budget_remaining": 0.6998198919351614,
+      "alerts": [
+        {
+          "name": "page_fast",
+          "severity": "page",
+          "start": "2026-09-23T10:12:00",
+          "minutes": 32
+        },
+        {
+          "name": "page_slow",
+          "severity": "page",
+          "start": "2026-09-23T10:14:00",
+          "minutes": 51
+        },
+        {
+          "name": "ticket_fast",
+          "severity": "ticket",
+          "start": "2026-09-23T10:19:00",
+          "minutes": 135
+        },
+        {
+          "name": "ticket_slow",
+          "severity": "ticket",
+          "start": "2026-09-23T10:14:00",
+          "minutes": 381
+        }
+      ],
+      "daily": [
+        {
+          "day": "2026-08-30",
+          "good": 1.0,
+          "total": 1.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-08-31",
+          "good": 485.0,
+          "total": 485.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-01",
+          "good": 495.0,
+          "total": 495.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-02",
+          "good": 479.0,
+          "total": 479.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-03",
+          "good": 482.0,
+          "total": 482.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-04",
+          "good": 470.0,
+          "total": 470.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-05",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-06",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-07",
+          "good": 475.0,
+          "total": 476.0,
+          "ratio": 0.9978991596638656
+        },
+        {
+          "day": "2026-09-08",
+          "good": 485.0,
+          "total": 485.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-09",
+          "good": 463.0,
+          "total": 463.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-10",
+          "good": 471.0,
+          "total": 471.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-11",
+          "good": 491.0,
+          "total": 491.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-12",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-13",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-14",
+          "good": 472.0,
+          "total": 472.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-15",
+          "good": 500.0,
+          "total": 500.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-16",
+          "good": 473.0,
+          "total": 473.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-17",
+          "good": 461.0,
+          "total": 461.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-18",
+          "good": 464.0,
+          "total": 464.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-19",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-20",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-21",
+          "good": 474.0,
+          "total": 474.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-22",
+          "good": 478.0,
+          "total": 478.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-23",
+          "good": 446.0,
+          "total": 475.0,
+          "ratio": 0.9389473684210526
+        },
+        {
+          "day": "2026-09-24",
+          "good": 473.0,
+          "total": 473.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-25",
+          "good": 475.0,
+          "total": 475.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-26",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-27",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-28",
+          "good": 451.0,
+          "total": 451.0,
+          "ratio": 1.0
+        }
+      ],
+      "budget": [
+        {
+          "day": "2026-08-30",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-08-31",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-01",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-02",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-03",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-04",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-05",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-06",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-07",
+          "budget_remaining": 0.9653739612188366
+        },
+        {
+          "day": "2026-09-08",
+          "budget_remaining": 0.9703528016602432
+        },
+        {
+          "day": "2026-09-09",
+          "budget_remaining": 0.9739311783107404
+        },
+        {
+          "day": "2026-09-10",
+          "budget_remaining": 0.9767819828186673
+        },
+        {
+          "day": "2026-09-11",
+          "budget_remaining": 0.9791579824927054
+        },
+        {
+          "day": "2026-09-12",
+          "budget_remaining": 0.9791579824927054
+        },
+        {
+          "day": "2026-09-13",
+          "budget_remaining": 0.9791579824927054
+        },
+        {
+          "day": "2026-09-14",
+          "budget_remaining": 0.9810246679316889
+        },
+        {
+          "day": "2026-09-15",
+          "budget_remaining": 0.9826689774696707
+        },
+        {
+          "day": "2026-09-16",
+          "budget_remaining": 0.983982059907096
+        },
+        {
+          "day": "2026-09-17",
+          "budget_remaining": 0.9850835322195705
+        },
+        {
+          "day": "2026-09-18",
+          "budget_remaining": 0.9860491071428572
+        },
+        {
+          "day": "2026-09-19",
+          "budget_remaining": 0.9860491071428572
+        },
+        {
+          "day": "2026-09-20",
+          "budget_remaining": 0.9860491071428572
+        },
+        {
+          "day": "2026-09-21",
+          "budget_remaining": 0.9869144203088197
+        },
+        {
+          "day": "2026-09-22",
+          "budget_remaining": 0.9876847290640394
+        },
+        {
+          "day": "2026-09-23",
+          "budget_remaining": 0.6509598603839444
+        },
+        {
+          "day": "2026-09-24",
+          "budget_remaining": 0.669166299073666
+        },
+        {
+          "day": "2026-09-25",
+          "budget_remaining": 0.6856334486010691
+        },
+        {
+          "day": "2026-09-26",
+          "budget_remaining": 0.6856334486010691
+        },
+        {
+          "day": "2026-09-27",
+          "budget_remaining": 0.6856334486010691
+        },
+        {
+          "day": "2026-09-28",
+          "budget_remaining": 0.6998198919351614
+        }
+      ]
+    },
+    {
+      "name": "fast_lane_latency",
+      "description": "Fast-lane queries answered within 2 seconds",
+      "objective": 0.95,
+      "good": 862.0,
+      "total": 862.0,
+      "ratio": 1.0,
+      "budget_remaining": 1.0,
+      "alerts": [],
+      "daily": [
+        {
+          "day": "2026-08-30",
+          "good": 1.0,
+          "total": 1.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-08-31",
+          "good": 39.0,
+          "total": 39.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-01",
+          "good": 39.0,
+          "total": 39.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-02",
+          "good": 39.0,
+          "total": 39.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-03",
+          "good": 39.0,
+          "total": 39.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-04",
+          "good": 39.0,
+          "total": 39.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-05",
+          "good": 2.0,
+          "total": 2.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-06",
+          "good": 2.0,
+          "total": 2.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-07",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-08",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-09",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-10",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-11",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-12",
+          "good": 2.0,
+          "total": 2.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-13",
+          "good": 2.0,
+          "total": 2.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-14",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-15",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-16",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-17",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-18",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-19",
+          "good": 2.0,
+          "total": 2.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-20",
+          "good": 2.0,
+          "total": 2.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-21",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-22",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-23",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-24",
+          "good": 40.0,
+          "total": 40.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-25",
+          "good": 42.0,
+          "total": 42.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-26",
+          "good": 2.0,
+          "total": 2.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-27",
+          "good": 2.0,
+          "total": 2.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-28",
+          "good": 48.0,
+          "total": 48.0,
+          "ratio": 1.0
+        }
+      ],
+      "budget": [
+        {
+          "day": "2026-08-30",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-08-31",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-01",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-02",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-03",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-04",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-05",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-06",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-07",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-08",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-09",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-10",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-11",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-12",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-13",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-14",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-15",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-16",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-17",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-18",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-19",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-20",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-21",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-22",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-23",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-24",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-25",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-26",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-27",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-28",
+          "budget_remaining": 1.0
+        }
+      ]
+    },
+    {
+      "name": "spark_lane_latency",
+      "description": "Spark-lane queries answered within 2 minutes",
+      "objective": 0.9,
+      "good": 91523.0,
+      "total": 91523.0,
+      "ratio": 1.0,
+      "budget_remaining": 1.0,
+      "alerts": [],
+      "daily": [
+        {
+          "day": "2026-08-30",
+          "good": 2880.0,
+          "total": 2880.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-08-31",
+          "good": 6433.0,
+          "total": 6433.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-01",
+          "good": 6530.0,
+          "total": 6530.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-02",
+          "good": 6344.0,
+          "total": 6344.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-03",
+          "good": 6524.0,
+          "total": 6524.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-04",
+          "good": 6398.0,
+          "total": 6398.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-05",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-06",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-07",
+          "good": 3605.0,
+          "total": 3605.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-08",
+          "good": 3579.0,
+          "total": 3579.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-09",
+          "good": 3487.0,
+          "total": 3487.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-10",
+          "good": 3579.0,
+          "total": 3579.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-11",
+          "good": 3618.0,
+          "total": 3618.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-12",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-13",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-14",
+          "good": 3555.0,
+          "total": 3555.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-15",
+          "good": 3600.0,
+          "total": 3600.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-16",
+          "good": 3523.0,
+          "total": 3523.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-17",
+          "good": 3514.0,
+          "total": 3514.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-18",
+          "good": 3461.0,
+          "total": 3461.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-19",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-20",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-21",
+          "good": 3536.0,
+          "total": 3536.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-22",
+          "good": 3612.0,
+          "total": 3612.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-23",
+          "good": 3453.0,
+          "total": 3453.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-24",
+          "good": 3495.0,
+          "total": 3495.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-25",
+          "good": 3523.0,
+          "total": 3523.0,
+          "ratio": 1.0
+        },
+        {
+          "day": "2026-09-26",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-27",
+          "good": 0.0,
+          "total": 0.0,
+          "ratio": null
+        },
+        {
+          "day": "2026-09-28",
+          "good": 3274.0,
+          "total": 3274.0,
+          "ratio": 1.0
+        }
+      ],
+      "budget": [
+        {
+          "day": "2026-08-30",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-08-31",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-01",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-02",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-03",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-04",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-05",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-06",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-07",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-08",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-09",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-10",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-11",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-12",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-13",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-14",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-15",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-16",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-17",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-18",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-19",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-20",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-21",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-22",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-23",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-24",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-25",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-26",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-27",
+          "budget_remaining": 1.0
+        },
+        {
+          "day": "2026-09-28",
+          "budget_remaining": 1.0
+        }
+      ]
+    }
+  ]
+}
