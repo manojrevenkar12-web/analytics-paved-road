@@ -19,7 +19,8 @@ spec:
         - name: s3
           image: adobe/s3mock:3.12.0
           env:
-            - {name: COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS, value: lake}
+            - {name: initialBuckets, value: lake}                                   # S3Mock 3.x
+            - {name: COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS, value: lake}   # S3Mock 4.x
             - {name: COM_ADOBE_TESTING_S3MOCK_STORE_RETAIN_FILES_ON_EXIT, value: "false"}
           ports: [{containerPort: 9090}]
           readinessProbe: {tcpSocket: {port: 9090}, initialDelaySeconds: 3}
