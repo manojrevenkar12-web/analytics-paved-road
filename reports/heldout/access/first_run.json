@@ -1,0 +1,485 @@
+{
+  "set": "access",
+  "grades": {
+    "correct": 40
+  },
+  "accuracy": 1.0,
+  "allowed_but_should_refuse": [],
+  "refused_but_should_allow": [],
+  "cases": [
+    {
+      "id": "a01",
+      "user": "pia",
+      "sql": "SELECT country, segment, COUNT(*) AS customers FROM raw.customers GROUP BY country, segment",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a02",
+      "user": "pia",
+      "sql": "SELECT * FROM raw.customers LIMIT 100",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a03",
+      "user": "pia",
+      "sql": "SELECT country, COUNT(*) FROM raw.customers WHERE birth_date >= DATE '2000-01-01' GROUP BY country",
+      "expect": "refuse",
+      "expected_rule": "denied_column",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "denied_column",
+      "grade": "correct"
+    },
+    {
+      "id": "a04",
+      "user": "pia",
+      "sql": "SELECT n FROM (SELECT full_name AS n FROM raw.customers) s",
+      "expect": "refuse",
+      "expected_rule": "denied_column",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "denied_column",
+      "grade": "correct"
+    },
+    {
+      "id": "a05",
+      "user": "pia",
+      "sql": "SELECT name FROM raw.instruments UNION ALL SELECT email FROM raw.customers",
+      "expect": "refuse",
+      "expected_rule": "denied_column",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "denied_column",
+      "grade": "correct"
+    },
+    {
+      "id": "a06",
+      "user": "pia",
+      "sql": "SELECT `EMAIL` FROM `raw`.`customers` LIMIT 10",
+      "expect": "refuse",
+      "expected_rule": "denied_column",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "denied_column",
+      "grade": "correct"
+    },
+    {
+      "id": "a07",
+      "user": "pia",
+      "sql": "SELECT channel, SUM(amount_eur) AS volume FROM raw.trades WHERE executed_at BETWEEN TIMESTAMP '2026-09-21 00:00:00' AND TIMESTAMP '2026-09-27 23:59:59' GROUP BY channel",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a08",
+      "user": "pia",
+      "sql": "SELECT side, COUNT(*) FROM raw.trades WHERE side = 'buy' GROUP BY side",
+      "expect": "refuse",
+      "expected_rule": "partition_filter_required",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "partition_filter_required",
+      "grade": "correct"
+    },
+    {
+      "id": "a09",
+      "user": "pia",
+      "sql": "SELECT COUNT(*) FROM raw.customers a JOIN raw.customers b ON a.iban = b.iban AND a.customer_id <> b.customer_id",
+      "expect": "refuse",
+      "expected_rule": "denied_column",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "denied_column",
+      "grade": "correct"
+    },
+    {
+      "id": "a10",
+      "user": "pia",
+      "sql": "SELECT * FROM information_schema.columns",
+      "expect": "refuse",
+      "expected_rule": "unknown_table",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "unknown_table",
+      "grade": "correct"
+    },
+    {
+      "id": "a11",
+      "user": "pia",
+      "sql": "SELECT customer_id, phone FROM raw.customers",
+      "expect": "refuse",
+      "expected_rule": "unknown_column",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "unknown_column",
+      "grade": "correct"
+    },
+    {
+      "id": "a12",
+      "user": "pia",
+      "sql": "SELECT country, COUNT(* FROM raw.customers GROUP BY country",
+      "expect": "refuse",
+      "expected_rule": "parse_error",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "parse_error",
+      "grade": "correct"
+    },
+    {
+      "id": "a13",
+      "user": "ana",
+      "sql": "SELECT * FROM raw.customers LIMIT 100",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [
+        "raw.customers.birth_date",
+        "raw.customers.email",
+        "raw.customers.full_name",
+        "raw.customers.iban"
+      ],
+      "got": "allow",
+      "masked": [
+        "raw.customers.birth_date",
+        "raw.customers.email",
+        "raw.customers.full_name",
+        "raw.customers.iban"
+      ],
+      "grade": "correct"
+    },
+    {
+      "id": "a14",
+      "user": "ben",
+      "sql": "SELECT email, COUNT(*) AS n FROM raw.customers GROUP BY email HAVING COUNT(*) > 1",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [
+        "raw.customers.email"
+      ],
+      "got": "allow",
+      "masked": [
+        "raw.customers.email"
+      ],
+      "grade": "correct"
+    },
+    {
+      "id": "a15",
+      "user": "ana",
+      "sql": "SELECT year(birth_date) AS birth_year, COUNT(*) FROM raw.customers GROUP BY year(birth_date)",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [
+        "raw.customers.birth_date"
+      ],
+      "got": "allow",
+      "masked": [
+        "raw.customers.birth_date"
+      ],
+      "grade": "correct"
+    },
+    {
+      "id": "a16",
+      "user": "ana",
+      "sql": "WITH c AS (SELECT customer_id, iban FROM raw.customers) SELECT c.iban, SUM(t.amount_eur) AS volume FROM c JOIN raw.trades t ON t.customer_id = c.customer_id WHERE t.executed_at >= DATE '2026-09-21' GROUP BY c.iban ORDER BY volume DESC LIMIT 50",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [
+        "raw.customers.iban"
+      ],
+      "got": "allow",
+      "masked": [
+        "raw.customers.iban"
+      ],
+      "grade": "correct"
+    },
+    {
+      "id": "a17",
+      "user": "ana",
+      "sql": "SELECT c.country, COUNT(DISTINCT t.customer_id) AS traders FROM raw.customers c JOIN raw.trades t ON t.customer_id = c.customer_id AND t.executed_at >= TIMESTAMP '2026-09-22 00:00:00' GROUP BY c.country",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a18",
+      "user": "ana",
+      "sql": "SELECT customer_id, country FROM raw.customers WHERE email = 'anna@example.org'",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [
+        "raw.customers.email"
+      ],
+      "got": "allow",
+      "masked": [
+        "raw.customers.email"
+      ],
+      "grade": "correct"
+    },
+    {
+      "id": "a19",
+      "user": "ben",
+      "sql": "SELECT customer_id, signup_at FROM raw.customers ORDER BY full_name LIMIT 20",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [
+        "raw.customers.full_name"
+      ],
+      "got": "allow",
+      "masked": [
+        "raw.customers.full_name"
+      ],
+      "grade": "correct"
+    },
+    {
+      "id": "a20",
+      "user": "ben",
+      "sql": "SELECT CAST(executed_at AS DATE) AS d, COUNT(*) FROM raw.trades WHERE CAST(executed_at AS DATE) IN (DATE '2026-09-27', DATE '2026-09-28') GROUP BY CAST(executed_at AS DATE)",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a21",
+      "user": "ben",
+      "sql": "select Country, count(*) as n from LAKE.Raw.CUSTOMERS group by Country",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a22",
+      "user": "ana",
+      "sql": "SELECT price_date, close_eur FROM `lake`.`raw`.`prices_daily` WHERE isin = 'DE0007164600' ORDER BY price_date",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a23",
+      "user": "ben",
+      "sql": "SELECT name FROM raw.instruments WHERE name <> 'a;b' /* ; DROP TABLE raw.trades */",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a24",
+      "user": "ben",
+      "sql": "SELECT t.trade_id FROM raw.customers c JOIN raw.trades t ON t.customer_id = c.customer_id WHERE t.executed_at >= c.signup_at",
+      "expect": "refuse",
+      "expected_rule": "partition_filter_required",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "partition_filter_required",
+      "grade": "correct"
+    },
+    {
+      "id": "a25",
+      "user": "ben",
+      "sql": "SELECT COUNT(*) FROM (SELECT trade_id, executed_at FROM raw.trades) x WHERE x.executed_at >= DATE '2026-09-01'",
+      "expect": "refuse",
+      "expected_rule": "partition_filter_required",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "partition_filter_required",
+      "grade": "correct"
+    },
+    {
+      "id": "a26",
+      "user": "ben",
+      "sql": "SELECT * FROM read_parquet('s3://lake/warehouse/raw/customers/')",
+      "expect": "refuse",
+      "expected_rule": "table_function",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "table_function",
+      "grade": "correct"
+    },
+    {
+      "id": "a27",
+      "user": "ben",
+      "sql": "SET spark.sql.ansi.enabled = false",
+      "expect": "refuse",
+      "expected_rule": "read_only",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "read_only",
+      "grade": "correct"
+    },
+    {
+      "id": "a28",
+      "user": "ana",
+      "sql": "SELECT * FROM mart.customer_ltv",
+      "expect": "refuse",
+      "expected_rule": "unknown_table",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "unknown_table",
+      "grade": "correct"
+    },
+    {
+      "id": "a29",
+      "user": "ana",
+      "sql": "CREATE TABLE mart.my_customers AS SELECT customer_id, country FROM raw.customers",
+      "expect": "refuse",
+      "expected_rule": "read_only",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "read_only",
+      "grade": "correct"
+    },
+    {
+      "id": "a30",
+      "user": "carl",
+      "sql": "SELECT full_name, email, iban, birth_date FROM raw.customers WHERE customer_id = 'C-000123'",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a31",
+      "user": "carl",
+      "sql": "SELECT type, SUM(amount_eur) AS total FROM raw.cash_movements WHERE CAST(booked_at AS DATE) = DATE '2026-09-28' GROUP BY type",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a32",
+      "user": "carl",
+      "sql": "SELECT m.customer_id, m.deposits_eur, c.iban FROM mart.customer_month m JOIN lake.raw.customers c ON c.customer_id = m.customer_id WHERE m.month = DATE '2026-08-01' AND m.deposits_eur > 50000",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a33",
+      "user": "carl",
+      "sql": "SELECT customer_id, SUM(amount_eur) FROM raw.cash_movements WHERE type = 'withdrawal' GROUP BY customer_id",
+      "expect": "refuse",
+      "expected_rule": "partition_filter_required",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "partition_filter_required",
+      "grade": "correct"
+    },
+    {
+      "id": "a34",
+      "user": "carl",
+      "sql": "DELETE FROM raw.customers WHERE customer_id = 'C-000123'",
+      "expect": "refuse",
+      "expected_rule": "read_only",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "read_only",
+      "grade": "correct"
+    },
+    {
+      "id": "a35",
+      "user": "carl",
+      "sql": "SELECT name FROM raw.instruments --list\n; SELECT country FROM raw.customers",
+      "expect": "refuse",
+      "expected_rule": "single_statement",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "single_statement",
+      "grade": "correct"
+    },
+    {
+      "id": "a36",
+      "user": "n8n",
+      "sql": "SELECT trade_date, country, SUM(trades) AS trades FROM mart.daily_trading WHERE trade_date >= DATE '2026-09-21' GROUP BY trade_date, country",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a37",
+      "user": "n8n",
+      "sql": "SELECT * FROM raw.trades WHERE executed_at >= current_date() - INTERVAL 1 DAYS LIMIT 500",
+      "expect": "allow",
+      "expected_rule": null,
+      "expected_masked": [],
+      "got": "allow",
+      "masked": [],
+      "grade": "correct"
+    },
+    {
+      "id": "a38",
+      "user": "n8n",
+      "sql": "SELECT country, SUM(fees_eur) FROM mart.daily_trading GROUP BY country",
+      "expect": "refuse",
+      "expected_rule": "denied_column",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "denied_column",
+      "grade": "correct"
+    },
+    {
+      "id": "a39",
+      "user": "n8n",
+      "sql": "WITH f AS (SELECT customer_id, deposits_eur AS d FROM mart.customer_month) SELECT COUNT(*) FROM f WHERE d > 0",
+      "expect": "refuse",
+      "expected_rule": "denied_column",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "denied_column",
+      "grade": "correct"
+    },
+    {
+      "id": "a40",
+      "user": "mallory",
+      "sql": "SELECT name FROM raw.instruments LIMIT 10",
+      "expect": "refuse",
+      "expected_rule": "unknown_user",
+      "expected_masked": [],
+      "got": "refuse",
+      "rule": "unknown_user",
+      "grade": "correct"
+    }
+  ],
+  "file": "heldout/access/cases.yaml",
+  "sha256": "b88832de1bd189a86edb5786e710b693e37112bd999add1970e8dace857bbfd2",
+  "commit": "2cc2d6d",
+  "at": "2026-10-29T08:48:18+00:00"
+}

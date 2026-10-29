@@ -1,0 +1,838 @@
+{
+  "set": "ask",
+  "parser": "sim",
+  "grades": {
+    "correct": 19,
+    "refused_answerable": 2,
+    "wrong": 9,
+    "answered_unanswerable": 4,
+    "correct_refusal": 6
+  },
+  "answerable": 30,
+  "accuracy": 0.6333333333333333,
+  "wrong_answers": 13,
+  "cases": [
+    {
+      "id": "q01",
+      "question": "What was our total trading volume last month?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "trading_volume_eur"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q02",
+      "question": "How many trades went through yesterday?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "trades"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-09-28",
+        "end": "2026-09-28",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q03",
+      "question": "Break down order fees by country for last week.",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "fees_eur"
+        ],
+        "dimensions": [
+          "country"
+        ],
+        "grain": null,
+        "start": "2026-09-21",
+        "end": "2026-09-27",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q04",
+      "question": "How many people signed up in July, split by acquisition channel?",
+      "answerable": true,
+      "answered": false,
+      "reason": "I couldn't match that to a defined metric. I can answer about: trades, trading volume, buy volume, sell volume, net buying, order fees, average ticket, active traders, deposits, withdrawals, net inflow, savings plan executions, new customers.",
+      "expected_refused": null,
+      "grade": "refused_answerable"
+    },
+    {
+      "id": "q05",
+      "question": "Show me active traders per day for the last 14 days.",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "active_traders"
+        ],
+        "dimensions": [],
+        "grain": "day",
+        "start": "2026-09-15",
+        "end": "2026-09-28",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q06",
+      "question": "Buy volume this month: German customers versus French customers.",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "buy_volume_eur"
+        ],
+        "dimensions": [
+          "country"
+        ],
+        "grain": null,
+        "start": "2026-09-01",
+        "end": "2026-09-28",
+        "filters": [
+          {
+            "dimension": "country",
+            "values": [
+              "DE",
+              "FR"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q07",
+      "question": "Which five countries had the highest sell volume in August?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "sell_volume_eur"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q08",
+      "question": "What does net inflow look like per customer segment?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "net_inflow_eur"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q09",
+      "question": "Deposits month by month from June through August, please.",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "deposits_eur"
+        ],
+        "dimensions": [],
+        "grain": "month",
+        "start": "2026-06-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q10",
+      "question": "What was the crypto trading volume in euros over the last 7 days?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "trading_volume_eur"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-09-22",
+        "end": "2026-09-28",
+        "filters": [
+          {
+            "dimension": "asset_class",
+            "values": [
+              "crypto"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q11",
+      "question": "Average ticket size per asset class so far this quarter",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "average_ticket_eur"
+        ],
+        "dimensions": [
+          "asset_class"
+        ],
+        "grain": null,
+        "start": "2026-07-01",
+        "end": "2026-09-28",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q12",
+      "question": "Which trade channel generated the most order fees last month?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "fees_eur"
+        ],
+        "dimensions": [
+          "channel"
+        ],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "metric_desc",
+        "limit": 1
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q13",
+      "question": "Number of trades by country and asset class, last week",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "trades"
+        ],
+        "dimensions": [
+          "country"
+        ],
+        "grain": null,
+        "start": "2026-09-21",
+        "end": "2026-09-27",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q14",
+      "question": "How many savings plan executions have we had this month?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "savings_plan_executions"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-09-01",
+        "end": "2026-09-28",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q15",
+      "question": "Weekly net buying since the beginning of August",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "net_buy_eur"
+        ],
+        "dimensions": [],
+        "grain": "week",
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q16",
+      "question": "Compare withdrawals for Italy and Spain in July.",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "withdrawals_eur"
+        ],
+        "dimensions": [
+          "country"
+        ],
+        "grain": null,
+        "start": "2026-07-01",
+        "end": "2026-07-31",
+        "filters": [
+          {
+            "dimension": "country",
+            "values": [
+              "IT",
+              "ES"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q17",
+      "question": "How many new customers came in through referrals in the last 30 days?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "new_customers"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-30",
+        "end": "2026-09-28",
+        "filters": [
+          {
+            "dimension": "acquisition_channel",
+            "values": [
+              "referral"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q18",
+      "question": "Active traders by customer segment yesterday",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "active_traders"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-09-28",
+        "end": "2026-09-28",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q19",
+      "question": "Which country had the fewest active traders last week?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "active_traders"
+        ],
+        "dimensions": [
+          "country"
+        ],
+        "grain": null,
+        "start": "2026-09-21",
+        "end": "2026-09-27",
+        "filters": [],
+        "order": "metric_asc",
+        "limit": 1
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q20",
+      "question": "Daily trading volume from 3 to 16 August",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "trading_volume_eur"
+        ],
+        "dimensions": [],
+        "grain": "day",
+        "start": "2026-08-30",
+        "end": "2026-09-28",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q21",
+      "question": "Trades placed in the app, by month, since June",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "trades"
+        ],
+        "dimensions": [],
+        "grain": "month",
+        "start": "2026-06-01",
+        "end": "2026-09-28",
+        "filters": [
+          {
+            "dimension": "channel",
+            "values": [
+              "app"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q22",
+      "question": "ETF buy volume and sell volume for last month",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "buy_volume_eur",
+          "sell_volume_eur"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [
+          {
+            "dimension": "asset_class",
+            "values": [
+              "etf"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q23",
+      "question": "Net inflow side by side for Austria, Belgium and the Netherlands last month",
+      "answerable": true,
+      "answered": false,
+      "reason": "'side for' is not a dimension I know. Dimensions: country, asset class, trade channel, customer segment, acquisition channel.",
+      "expected_refused": null,
+      "grade": "refused_answerable"
+    },
+    {
+      "id": "q24",
+      "question": "Top 3 asset classes by number of trades over the last 30 days",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "trades"
+        ],
+        "dimensions": [
+          "asset_class"
+        ],
+        "grain": null,
+        "start": "2026-08-30",
+        "end": "2026-09-28",
+        "filters": [],
+        "order": "metric_desc",
+        "limit": 3
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q25",
+      "question": "Deposits per country and customer segment in August",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "deposits_eur"
+        ],
+        "dimensions": [
+          "country"
+        ],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q26",
+      "question": "Monthly order fees on web trades since July",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "fees_eur",
+          "trades"
+        ],
+        "dimensions": [],
+        "grain": "month",
+        "start": "2026-07-01",
+        "end": "2026-09-28",
+        "filters": [
+          {
+            "dimension": "channel",
+            "values": [
+              "web"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q27",
+      "question": "Savings plan executions for Dutch customers, month by month, this quarter",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "savings_plan_executions"
+        ],
+        "dimensions": [],
+        "grain": "month",
+        "start": "2026-07-01",
+        "end": "2026-09-28",
+        "filters": [
+          {
+            "dimension": "country",
+            "values": [
+              "NL"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q28",
+      "question": "New customers last week: paid social vs partner",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "new_customers"
+        ],
+        "dimensions": [
+          "acquisition_channel"
+        ],
+        "grain": null,
+        "start": "2026-09-21",
+        "end": "2026-09-27",
+        "filters": [
+          {
+            "dimension": "acquisition_channel",
+            "values": [
+              "paid_social",
+              "partner"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q29",
+      "question": "What's the average ticket on German crypto trades this week?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "average_ticket_eur",
+          "trades"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-09-28",
+        "end": "2026-09-28",
+        "filters": [
+          {
+            "dimension": "country",
+            "values": [
+              "DE"
+            ]
+          },
+          {
+            "dimension": "asset_class",
+            "values": [
+              "crypto"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "wrong"
+    },
+    {
+      "id": "q30",
+      "question": "How many active traders do we have in Greece?",
+      "answerable": true,
+      "parsed": {
+        "metrics": [
+          "active_traders"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-30",
+        "end": "2026-09-28",
+        "filters": [
+          {
+            "dimension": "country",
+            "values": [
+              "GR"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "expected_refused": null,
+      "grade": "correct"
+    },
+    {
+      "id": "q31",
+      "question": "Who were our ten biggest crypto traders last week?",
+      "answerable": false,
+      "parsed": {
+        "metrics": [
+          "active_traders"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-09-21",
+        "end": "2026-09-27",
+        "filters": [
+          {
+            "dimension": "asset_class",
+            "values": [
+              "crypto"
+            ]
+          }
+        ],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "grade": "answered_unanswerable"
+    },
+    {
+      "id": "q32",
+      "question": "How many new customers should we expect in October?",
+      "answerable": false,
+      "answered": false,
+      "reason": "The data runs through 2026-09-28; that period has not happened yet.",
+      "grade": "correct_refusal"
+    },
+    {
+      "id": "q33",
+      "question": "Why did French trading volume fall last week?",
+      "answerable": false,
+      "answered": false,
+      "reason": "I can show what changed, not why; break the metric down by a dimension to look for the cause.",
+      "grade": "correct_refusal"
+    },
+    {
+      "id": "q34",
+      "question": "What are our total assets under custody in Germany?",
+      "answerable": false,
+      "answered": false,
+      "reason": "I couldn't match that to a defined metric. I can answer about: trades, trading volume, buy volume, sell volume, net buying, order fees, average ticket, active traders, deposits, withdrawals, net inflow, savings plan executions, new customers.",
+      "grade": "correct_refusal"
+    },
+    {
+      "id": "q35",
+      "question": "Trading volume by customer age group for last month",
+      "answerable": false,
+      "parsed": {
+        "metrics": [
+          "trading_volume_eur"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "grade": "answered_unanswerable"
+    },
+    {
+      "id": "q36",
+      "question": "Deposits by asset class in August",
+      "answerable": false,
+      "answered": false,
+      "reason": "Deposits cannot be broken down by asset class; it has country, customer segment.",
+      "grade": "correct_refusal"
+    },
+    {
+      "id": "q37",
+      "question": "Trading volume per customer segment last month",
+      "answerable": false,
+      "parsed": {
+        "metrics": [
+          "trading_volume_eur"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "grade": "answered_unanswerable"
+    },
+    {
+      "id": "q38",
+      "question": "Show daily deposits for September",
+      "answerable": false,
+      "answered": false,
+      "reason": "Deposits is only available by month.",
+      "grade": "correct_refusal"
+    },
+    {
+      "id": "q39",
+      "question": "How much was withdrawn in the last 14 days?",
+      "answerable": false,
+      "answered": false,
+      "reason": "I couldn't match that to a defined metric. I can answer about: trades, trading volume, buy volume, sell volume, net buying, order fees, average ticket, active traders, deposits, withdrawals, net inflow, savings plan executions, new customers.",
+      "grade": "correct_refusal"
+    },
+    {
+      "id": "q40",
+      "question": "How many trades did Swiss customers make last month?",
+      "answerable": false,
+      "parsed": {
+        "metrics": [
+          "trades"
+        ],
+        "dimensions": [],
+        "grain": null,
+        "start": "2026-08-01",
+        "end": "2026-08-31",
+        "filters": [],
+        "order": "natural",
+        "limit": null
+      },
+      "answered": true,
+      "grade": "answered_unanswerable"
+    }
+  ],
+  "file": "heldout/ask/questions.yaml",
+  "sha256": "14840339fcada2699b59e0a11c852f0280d0fe716549b4a7f8f369095bd8651a",
+  "commit": "2cc2d6d",
+  "at": "2026-10-29T08:48:26+00:00"
+}
