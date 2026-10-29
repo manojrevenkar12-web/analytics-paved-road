@@ -112,8 +112,7 @@ jobs:
       - name: deploy
         run: |
           kubectl apply -k deploy
-          kubectl -n analytics wait --for=condition=complete job/create-bucket --timeout=300s
-          for d in minio iceberg-rest apr-gateway; do kubectl -n analytics rollout status deploy/$d --timeout=300s; done
+          for d in s3 iceberg-rest apr-gateway; do kubectl -n analytics rollout status deploy/$d --timeout=300s; done
           kubectl -n analytics rollout status deploy/kyuubi --timeout=600s
       - name: diagnostics on failure
         if: failure()
@@ -130,7 +129,7 @@ jobs:
       - name: port-forward
         run: |
           kubectl -n analytics port-forward svc/iceberg-rest 8181:8181 >/tmp/pf1.log 2>&1 &
-          kubectl -n analytics port-forward svc/minio 9000:9000 >/tmp/pf2.log 2>&1 &
+          kubectl -n analytics port-forward svc/s3 9000:9000 >/tmp/pf2.log 2>&1 &
           kubectl -n analytics port-forward svc/kyuubi 10009:10009 >/tmp/pf3.log 2>&1 &
           kubectl -n analytics port-forward svc/apr-gateway 8000:8000 >/tmp/pf4.log 2>&1 &
           sleep 5
@@ -139,8 +138,8 @@ jobs:
           APR_CATALOG: rest
           APR_ICEBERG_REST_URI: http://127.0.0.1:8181
           APR_S3_ENDPOINT: http://127.0.0.1:9000
-          AWS_ACCESS_KEY_ID: minio
-          AWS_SECRET_ACCESS_KEY: minio-dev-only
+          AWS_ACCESS_KEY_ID: dev
+          AWS_SECRET_ACCESS_KEY: dev-only
           AWS_REGION: us-east-1
           APR_WAREHOUSE: /tmp/apr
         run: python -c "from apr.lake.ingest import ingest; runs = ingest(3); assert all(r.status == 'published' for r in runs), runs"
@@ -156,8 +155,8 @@ jobs:
           APR_CATALOG: rest
           APR_ICEBERG_REST_URI: http://127.0.0.1:8181
           APR_S3_ENDPOINT: http://127.0.0.1:9000
-          AWS_ACCESS_KEY_ID: minio
-          AWS_SECRET_ACCESS_KEY: minio-dev-only
+          AWS_ACCESS_KEY_ID: dev
+          AWS_SECRET_ACCESS_KEY: dev-only
           AWS_REGION: us-east-1
           APR_WAREHOUSE: /tmp/apr
           APR_KYUUBI_HOST: 127.0.0.1

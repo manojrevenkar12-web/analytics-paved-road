@@ -16,7 +16,7 @@
                      │              │
                      └──────┬───────┘
                             ▼
-             Iceberg REST catalog (Glue on AWS) + S3 (MinIO in kind)
+             Iceberg REST catalog (Glue on AWS) + S3 (S3Mock in kind)
                             ▲
             write-audit-publish (audit branch → checks → move main)
                             │

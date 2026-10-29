@@ -1,48 +1,33 @@
-# The lake for kind and development clusters: MinIO for storage and the Iceberg REST catalog.
+# The lake for kind and development clusters: S3-compatible storage and the Iceberg REST catalog.
 # On AWS these are S3 and the Glue Iceberg REST endpoint (deploy/terraform).
 apiVersion: v1
 kind: Secret
 metadata: {name: apr-s3, namespace: analytics}
-stringData: {AWS_ACCESS_KEY_ID: minio, AWS_SECRET_ACCESS_KEY: minio-dev-only}
+stringData: {AWS_ACCESS_KEY_ID: dev, AWS_SECRET_ACCESS_KEY: dev-only}
 ---
+# S3-compatible object storage for kind and development. MinIO stopped publishing images in
+# 2025, so this uses Adobe's S3Mock (path-style, any credentials, the bucket created at start).
 apiVersion: apps/v1
 kind: Deployment
-metadata: {name: minio, namespace: analytics}
+metadata: {name: s3, namespace: analytics}
 spec:
-  selector: {matchLabels: {app: minio}}
+  selector: {matchLabels: {app: s3}}
   template:
-    metadata: {labels: {app: minio}}
+    metadata: {labels: {app: s3}}
     spec:
       containers:
-        - name: minio
-          image: minio/minio:RELEASE.2025-04-22T22-12-26Z
-          args: [server, /data]
+        - name: s3
+          image: adobe/s3mock:3.12.0
           env:
-            - {name: MINIO_ROOT_USER, valueFrom: {secretKeyRef: {name: apr-s3, key: AWS_ACCESS_KEY_ID}}}
-            - {name: MINIO_ROOT_PASSWORD, valueFrom: {secretKeyRef: {name: apr-s3, key: AWS_SECRET_ACCESS_KEY}}}
-          ports: [{containerPort: 9000}]
-          readinessProbe: {httpGet: {path: /minio/health/ready, port: 9000}}
-          volumeMounts: [{name: data, mountPath: /data}]
-      volumes: [{name: data, emptyDir: {}}]
+            - {name: COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS, value: lake}
+            - {name: COM_ADOBE_TESTING_S3MOCK_STORE_RETAIN_FILES_ON_EXIT, value: "false"}
+          ports: [{containerPort: 9090}]
+          readinessProbe: {tcpSocket: {port: 9090}, initialDelaySeconds: 3}
 ---
 apiVersion: v1
 kind: Service
-metadata: {name: minio, namespace: analytics}
-spec: {selector: {app: minio}, ports: [{port: 9000}]}
----
-apiVersion: batch/v1
-kind: Job
-metadata: {name: create-bucket, namespace: analytics}
-spec:
-  backoffLimit: 10
-  template:
-    spec:
-      restartPolicy: OnFailure
-      containers:
-        - name: mc
-          image: minio/mc:RELEASE.2025-04-16T18-13-26Z
-          envFrom: [{secretRef: {name: apr-s3}}]
-          command: [sh, -c, 'mc alias set lake http://minio:9000 $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY && mc mb -p lake/lake']
+metadata: {name: s3, namespace: analytics}
+spec: {selector: {app: s3}, ports: [{port: 9000, targetPort: 9090}]}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,7 +45,7 @@ spec:
             - {name: AWS_REGION, value: us-east-1}
             - {name: CATALOG_WAREHOUSE, value: "s3://lake/"}
             - {name: CATALOG_IO__IMPL, value: org.apache.iceberg.aws.s3.S3FileIO}
-            - {name: CATALOG_S3_ENDPOINT, value: "http://minio:9000"}
+            - {name: CATALOG_S3_ENDPOINT, value: "http://s3:9000"}
             - {name: CATALOG_S3_PATH__STYLE__ACCESS, value: "true"}
           ports: [{containerPort: 8181}]
           readinessProbe: {httpGet: {path: /v1/config, port: 8181}, initialDelaySeconds: 5}

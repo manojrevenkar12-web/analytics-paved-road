@@ -1,5 +1,5 @@
 """The Iceberg catalog: a local SQLite catalog for development, the REST catalog (backed by
-S3/MinIO, or AWS Glue's Iceberg REST endpoint in production) everywhere else. Tables, their
+S3 (S3Mock in kind), or AWS Glue's Iceberg REST endpoint in production) everywhere else. Tables, their
 partition specs and properties are created from the data product contracts."""
 
 from __future__ import annotations
